@@ -47,9 +47,12 @@ TagManager:
   - name: Ground
     uniqueID: 2905512203
     locked: 0
-  - name: Vegetation
+  - name: Vegetation1
     uniqueID: 263719195
     locked: 0
-  - name: Player
+  - name: Vegetation2
+    uniqueID: 2061061463
+    locked: 0
+  - name: Character
     uniqueID: 36044739
     locked: 0
