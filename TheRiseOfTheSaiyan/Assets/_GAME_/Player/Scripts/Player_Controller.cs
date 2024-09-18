@@ -64,6 +64,7 @@ public class Player_Controller : MonoBehaviour
     {
         if (_moveDir.x != 0)
         {
+            _animator.SetBool("IsMovingSide", true);
             if (_moveDir.x > 0) // move Right
             {
                 _facingDirections = Directions.RIGHT;
@@ -76,8 +77,10 @@ public class Player_Controller : MonoBehaviour
 
         if (_moveDir.y != 0)
         {
+            _animator.SetBool("IsMovingUp", true);
             if (_moveDir.y > 0) // move UP
             {
+                
                 _facingDirections = Directions.UP;
             }
             else if (_moveDir.y < 0) // move DOWN
@@ -97,7 +100,6 @@ public class Player_Controller : MonoBehaviour
         {
             _spriteRenderer.flipX = false;
         }
-
     }
 
     #endregion
