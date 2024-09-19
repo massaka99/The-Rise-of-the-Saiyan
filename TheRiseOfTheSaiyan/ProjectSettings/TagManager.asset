@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Ground
   - 
   - 
   - 
@@ -55,4 +55,7 @@ TagManager:
     locked: 0
   - name: Character
     uniqueID: 36044739
+    locked: 0
+  - name: Vegetation3
+    uniqueID: 4224441969
     locked: 0
