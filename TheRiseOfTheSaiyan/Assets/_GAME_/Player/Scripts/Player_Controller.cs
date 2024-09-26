@@ -30,6 +30,8 @@ public class Player_Controller : MonoBehaviour
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
 
+        if (input.x != 0) input.y = 0;
+
 
         bool isMoving = input != Vector2.zero;
         animator.SetBool("isMoving", isMoving);
