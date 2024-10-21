@@ -6,8 +6,9 @@ using UnityEngine;
 public class Player_Controller : MonoBehaviour
 {
     public float moveSpeed;
-    public float runMultiplier = 2f; 
-
+    public float runMultiplier = 2f;
+    public LayerMask interactableLayer;
+     
     private Vector2 input;
     private Animator animator;
     public LayerMask groundLayer;
@@ -23,7 +24,7 @@ public class Player_Controller : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void Update()
+    public void HandleUpdate()
     {
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
@@ -75,11 +76,27 @@ public class Player_Controller : MonoBehaviour
         }
 
         animator.SetBool("isMoving", isMoving);
+
+        if (Input.GetKeyDown(KeyCode.E))
+            Interact();
+    }
+
+    void Interact()
+    {
+        var facingDir = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var interactPos = transform.position + facingDir;
+
+        var collider = Physics2D.OverlapCircle(interactPos, 0.2f, interactableLayer);
+
+        if (collider != null)
+        {
+            collider.GetComponent<Interactable>()?.Interact();
+        }
     }
 
     private bool IsWalkable(Vector2 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) != null)
+        if (Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer | interactableLayer) != null)
         {
             return false;
         }
