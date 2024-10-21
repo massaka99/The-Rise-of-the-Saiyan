@@ -2387,9 +2387,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 176
-        y: 928
+        y: 931
         width: 16
-        height: 16
+        height: 13
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2408,9 +2408,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 192
-        y: 928
+        y: 931
         width: 16
-        height: 16
+        height: 13
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2429,9 +2429,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 208
-        y: 928
+        y: 931
         width: 16
-        height: 16
+        height: 13
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -8959,8 +8959,8 @@ TextureImporter:
       name: homeopdateret_420
       rect:
         serializedVersion: 2
-        x: 48
-        y: 624
+        x: 197
+        y: 574
         width: 16
         height: 16
       alignment: 0
@@ -8980,8 +8980,8 @@ TextureImporter:
       name: homeopdateret_421
       rect:
         serializedVersion: 2
-        x: 64
-        y: 624
+        x: 179
+        y: 590
         width: 16
         height: 16
       alignment: 0
@@ -9001,8 +9001,8 @@ TextureImporter:
       name: homeopdateret_422
       rect:
         serializedVersion: 2
-        x: 80
-        y: 624
+        x: 161
+        y: 636
         width: 16
         height: 16
       alignment: 0
@@ -9022,8 +9022,8 @@ TextureImporter:
       name: homeopdateret_423
       rect:
         serializedVersion: 2
-        x: 96
-        y: 624
+        x: 141
+        y: 689
         width: 16
         height: 16
       alignment: 0
@@ -9274,8 +9274,8 @@ TextureImporter:
       name: homeopdateret_435
       rect:
         serializedVersion: 2
-        x: 48
-        y: 608
+        x: 198
+        y: 536
         width: 16
         height: 16
       alignment: 0
@@ -9295,8 +9295,8 @@ TextureImporter:
       name: homeopdateret_436
       rect:
         serializedVersion: 2
-        x: 64
-        y: 608
+        x: 258
+        y: 574
         width: 16
         height: 16
       alignment: 0
@@ -9316,8 +9316,8 @@ TextureImporter:
       name: homeopdateret_437
       rect:
         serializedVersion: 2
-        x: 80
-        y: 608
+        x: 142
+        y: 637
         width: 16
         height: 16
       alignment: 0
@@ -9337,8 +9337,8 @@ TextureImporter:
       name: homeopdateret_438
       rect:
         serializedVersion: 2
-        x: 96
-        y: 608
+        x: 169
+        y: 687
         width: 16
         height: 16
       alignment: 0
@@ -9484,8 +9484,8 @@ TextureImporter:
       name: homeopdateret_445
       rect:
         serializedVersion: 2
-        x: 64
-        y: 592
+        x: 228
+        y: 599
         width: 16
         height: 16
       alignment: 0
@@ -9505,8 +9505,8 @@ TextureImporter:
       name: homeopdateret_446
       rect:
         serializedVersion: 2
-        x: 80
-        y: 592
+        x: 161
+        y: 614
         width: 16
         height: 16
       alignment: 0
@@ -9526,8 +9526,8 @@ TextureImporter:
       name: homeopdateret_447
       rect:
         serializedVersion: 2
-        x: 96
-        y: 592
+        x: 158
+        y: 661
         width: 16
         height: 16
       alignment: 0
@@ -9675,8 +9675,8 @@ TextureImporter:
         serializedVersion: 2
         x: 48
         y: 576
-        width: 16
-        height: 16
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -9694,8 +9694,8 @@ TextureImporter:
       name: homeopdateret_455
       rect:
         serializedVersion: 2
-        x: 64
-        y: 576
+        x: 175
+        y: 561
         width: 16
         height: 16
       alignment: 0
@@ -9715,8 +9715,8 @@ TextureImporter:
       name: homeopdateret_456
       rect:
         serializedVersion: 2
-        x: 80
-        y: 576
+        x: 144
+        y: 615
         width: 16
         height: 16
       alignment: 0
@@ -9736,8 +9736,8 @@ TextureImporter:
       name: homeopdateret_457
       rect:
         serializedVersion: 2
-        x: 96
-        y: 576
+        x: 139
+        y: 659
         width: 16
         height: 16
       alignment: 0

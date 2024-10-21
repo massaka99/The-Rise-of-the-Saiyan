@@ -6,39 +6,44 @@ using UnityEngine;
 public class Player_Controller : MonoBehaviour
 {
     public float moveSpeed;
+    public float runMultiplier = 2f; 
 
     private Vector2 input;
-
     private Animator animator;
-
     public LayerMask groundLayer;
-
     private Rigidbody2D rb;
-
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;  
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
 
         if (input.x != 0) input.y = 0;
 
-
         bool isMoving = input != Vector2.zero;
         animator.SetBool("isMoving", isMoving);
 
+        float currentSpeed = moveSpeed;
+
+        
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed *= runMultiplier; 
+        }
+
         if (isMoving)
         {
-            Vector2 targetPos = rb.position + input * moveSpeed * Time.deltaTime;
+            Vector2 targetPos = rb.position + input * currentSpeed * Time.deltaTime;
 
             animator.SetFloat("moveX", input.x);
             animator.SetFloat("moveY", input.y);
@@ -53,10 +58,20 @@ public class Player_Controller : MonoBehaviour
                 spriteRenderer.flipX = input.x < 0;
             }
 
+            
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
         }
         else
         {
             rb.velocity = Vector2.zero;
+
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
         }
 
         animator.SetBool("isMoving", isMoving);
@@ -64,7 +79,7 @@ public class Player_Controller : MonoBehaviour
 
     private bool IsWalkable(Vector2 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.3f, groundLayer) != null)
+        if (Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) != null)
         {
             return false;
         }
