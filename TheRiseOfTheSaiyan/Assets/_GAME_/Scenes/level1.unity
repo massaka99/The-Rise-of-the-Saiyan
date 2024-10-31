@@ -36891,7 +36891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e972081d880f6a84599360ac559411e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_Controller: {fileID: 656659587}
+  player_Controller: {fileID: 0}
 --- !u!4 &935724505
 Transform:
   m_ObjectHideFlags: 0
@@ -117664,6 +117664,7 @@ GameObject:
   - component: {fileID: 2144023336}
   - component: {fileID: 2144023335}
   - component: {fileID: 2144023337}
+  - component: {fileID: 2144023338}
   m_Layer: 8
   m_Name: chichi
   m_TagString: Untagged
@@ -117822,11 +117823,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed3e16d01eb4a24a91ad2c3cdd7b6c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog:
-    lines:
-    - Hello Daddy
-    - let's make a baby
-    - right now!
+  dialogs:
+  - lines:
+    - meow
+    - nigga
+  - lines:
+    - Hi Goku!
+    - Will you finger my bum?
+--- !u!114 &2144023338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144023332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e972081d880f6a84599360ac559411e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player_Controller: {fileID: 656659587}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
