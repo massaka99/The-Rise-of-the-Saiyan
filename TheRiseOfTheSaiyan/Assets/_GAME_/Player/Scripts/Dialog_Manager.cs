@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,5 +32,10 @@ public class Dialog_Manager : MonoBehaviour
             dialogText.text += letter;
             yield return new WaitForSeconds(1f / lettersPerSecond);
         }
+    }
+
+    internal void ShowDialog(List<string> dialogLines)
+    {
+        throw new NotImplementedException();
     }
 }
