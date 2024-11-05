@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,15 +15,17 @@ public class Dialog_Manager : MonoBehaviour
     public event Action OnHideDialog;
 
     public static Dialog_Manager Instance { get; private set; }
-     
+
     private void Awake()
     {
         Instance = this;
     }
 
-    Dialog dialog;
-    int currentLine = 0;
-    bool isTyping;
+    private Dialog dialog;
+    private int currentLine = 0;
+    private bool isTyping;
+
+    private Coroutine typingCoroutine;
 
     public IEnumerator ShowDialog(Dialog dialog)
     {
@@ -33,7 +34,11 @@ public class Dialog_Manager : MonoBehaviour
 
         this.dialog = dialog;
         dialogBox.SetActive(true);
-        StartCoroutine(TypeDialog(dialog.Lines[0]));
+        currentLine = 0;  // Reset line when showing a new dialog
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeDialog(dialog.Lines[currentLine]));
     }
 
     public void HandleUpdate()
@@ -41,9 +46,11 @@ public class Dialog_Manager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.E) && !isTyping)
         {
             ++currentLine;
-            if (currentLine < dialog.Lines.Count) 
+            if (currentLine < dialog.Lines.Count)
             {
-                StartCoroutine(TypeDialog(dialog.Lines[currentLine]));
+                if (typingCoroutine != null)
+                    StopCoroutine(typingCoroutine);
+                typingCoroutine = StartCoroutine(TypeDialog(dialog.Lines[currentLine]));
             }
             else
             {
@@ -53,6 +60,7 @@ public class Dialog_Manager : MonoBehaviour
             }
         }
     }
+
 
     public IEnumerator TypeDialog(string line)
     {
@@ -64,5 +72,10 @@ public class Dialog_Manager : MonoBehaviour
             yield return new WaitForSeconds(1f / lettersPerSecond);
         }
         isTyping = false;
+    }
+
+    public void ResetDialog()
+    {
+        currentLine = 0;
     }
 }
