@@ -16,12 +16,15 @@ public class Player_Controller : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;  
 
+    AudioManager audioManager;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     public void HandleUpdate()
@@ -59,7 +62,6 @@ public class Player_Controller : MonoBehaviour
                 spriteRenderer.flipX = input.x < 0;
             }
 
-            
             if (!audioSource.isPlaying)
             {
                 audioSource.Play();
@@ -74,6 +76,7 @@ public class Player_Controller : MonoBehaviour
                 audioSource.Stop();
             }
         }
+
 
         animator.SetBool("isMoving", isMoving);
 
