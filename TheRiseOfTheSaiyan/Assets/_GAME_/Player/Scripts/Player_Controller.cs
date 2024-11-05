@@ -2,19 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[SelectionBase]
 public class Player_Controller : MonoBehaviour
 {
     public float moveSpeed;
     public float runMultiplier = 2f;
     public LayerMask interactableLayer;
-     
+
     private Vector2 input;
     private Animator animator;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    private AudioSource audioSource;  
+    private AudioSource audioSource;
+
+    private float lastMoveX = 0f;
+    private float lastMoveY = -1f;
 
     AudioManager audioManager;
 
@@ -32,25 +34,26 @@ public class Player_Controller : MonoBehaviour
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
 
-        if (input.x != 0) input.y = 0;
 
         bool isMoving = input != Vector2.zero;
         animator.SetBool("isMoving", isMoving);
 
         float currentSpeed = moveSpeed;
 
-        
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            currentSpeed *= runMultiplier; 
+            currentSpeed *= runMultiplier;
         }
 
         if (isMoving)
         {
             Vector2 targetPos = rb.position + input * currentSpeed * Time.deltaTime;
 
-            animator.SetFloat("moveX", input.x);
-            animator.SetFloat("moveY", input.y);
+            lastMoveX = input.x;
+            lastMoveY = input.y;
+
+            animator.SetFloat("moveX", lastMoveX);
+            animator.SetFloat("moveY", lastMoveY);
 
             if (IsWalkable(targetPos))
             {
@@ -77,8 +80,9 @@ public class Player_Controller : MonoBehaviour
             }
         }
 
-
-        animator.SetBool("isMoving", isMoving);
+        // Ensure the last move direction is saved in the animator
+        animator.SetFloat("lastMoveX", lastMoveX);
+        animator.SetFloat("lastMoveY", lastMoveY);
 
         if (Input.GetKeyDown(KeyCode.E))
             Interact();
@@ -86,7 +90,7 @@ public class Player_Controller : MonoBehaviour
 
     void Interact()
     {
-        var facingDir = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var facingDir = new Vector3(lastMoveX, lastMoveY);
         var interactPos = transform.position + facingDir;
 
         var collider = Physics2D.OverlapCircle(interactPos, 0.2f, interactableLayer);
@@ -106,4 +110,8 @@ public class Player_Controller : MonoBehaviour
 
         return true;
     }
+
+    // Public getters to access the last facing direction
+    public float GetLastMoveX() => lastMoveX;
+    public float GetLastMoveY() => lastMoveY;
 }
