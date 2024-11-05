@@ -36919,8 +36919,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b272c6e4cca954f991e950d63b0da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogBox: {fileID: 707818624}
-  dialogText: {fileID: 387460558}
+  dialogBox: {fileID: 0}
+  dialogText: {fileID: 0}
   lettersPerSecond: 40
 --- !u!1 &943621687
 GameObject:
@@ -114835,6 +114835,7 @@ GameObject:
   - component: {fileID: 2144023335}
   - component: {fileID: 2144023337}
   - component: {fileID: 2144023338}
+  - component: {fileID: 2144023339}
   m_Layer: 8
   m_Name: chichi
   m_TagString: Untagged
@@ -115013,6 +115014,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player_Controller: {fileID: 656659587}
+--- !u!114 &2144023339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144023332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b272c6e4cca954f991e950d63b0da1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogBox: {fileID: 0}
+  dialogText: {fileID: 387460558}
+  lettersPerSecond: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
