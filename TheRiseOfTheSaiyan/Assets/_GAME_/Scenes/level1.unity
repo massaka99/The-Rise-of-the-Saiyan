@@ -36559,6 +36559,8 @@ MonoBehaviour:
   whatIsEnemies:
     serializedVersion: 2
     m_Bits: 512
+  camAnim: {fileID: 0}
+  playerAnim: {fileID: 656659591}
   damage: 0
 --- !u!1 &707818624
 GameObject:
@@ -36696,7 +36698,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -32.3857, y: -20.6355, z: 0.97408676}
-  m_LocalScale: {x: 0.6985412, y: 0.7694747, z: 1}
+  m_LocalScale: {x: 0.4285802, y: 0.44501802, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1770467282}
