@@ -10,8 +10,23 @@ public class Attack : MonoBehaviour
     public float attackRange;
     public Transform attackPos;
     public LayerMask whatIsEnemies;
-    public Animator playerAnim; // Make sure this Animator is linked to the Player's Animator Controller
+    public Animator playerAnim;
     public int damage;
+
+    private Player_Controller playerController;
+
+    void Start()
+    {
+        // Search for the Player_Controller in the same GameObject or parent
+        playerController = GetComponentInParent<Player_Controller>();
+
+        // Check if playerController was found, to avoid NullReferenceException
+        if (playerController == null)
+        {
+            Debug.LogError("Player_Controller component not found. Please ensure it's attached to the player GameObject or its parent.");
+        }
+    }
+
 
     void Update()
     {
@@ -19,12 +34,15 @@ public class Attack : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                // Set the attack trigger and direction for the player's animation
+                // Trigger the attack animation and set the facing direction based on last movement
                 playerAnim.SetBool("isSpace", true);
 
-                // Set the direction based on movement or player facing direction
-                playerAnim.SetFloat("moveX", Input.GetAxisRaw("Horizontal"));
-                playerAnim.SetFloat("moveY", Input.GetAxisRaw("Vertical"));
+                // Get the last facing direction from Player_Controller
+                float lastMoveX = playerController.GetLastMoveX();
+                float lastMoveY = playerController.GetLastMoveY();
+
+                playerAnim.SetFloat("moveX", lastMoveX);
+                playerAnim.SetFloat("moveY", lastMoveY);
 
                 // Deal damage to enemies within range
                 Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
@@ -43,7 +61,7 @@ public class Attack : MonoBehaviour
         }
 
         // Reset isSpace to prevent continuous triggering
-        if (timeBtwAttack <= startBtwAttack - 0.1f) // Adjust time as needed for smooth transitions
+        if (timeBtwAttack <= startBtwAttack - 0.1f)
         {
             playerAnim.SetBool("isSpace", false);
         }
