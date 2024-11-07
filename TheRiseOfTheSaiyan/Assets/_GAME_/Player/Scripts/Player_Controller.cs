@@ -18,7 +18,8 @@ public class Player_Controller : MonoBehaviour
     private float lastMoveX = 0f;
     private float lastMoveY = -1f;
 
-    AudioManager audioManager;
+    private bool isTeleporting = false;
+    private AudioManager audioManager;
 
     private void Awake()
     {
@@ -82,6 +83,18 @@ public class Player_Controller : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
             Interact();
+    }
+
+    public void StartTeleport()
+    {
+        isTeleporting = true;
+        animator.SetBool("isTeleporting", true); 
+    }
+
+    public void EndTeleport()
+    {
+        isTeleporting = false;
+        animator.SetBool("isTeleporting", false);
     }
 
     void Interact()
