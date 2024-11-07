@@ -8,12 +8,17 @@ public class Enemy : MonoBehaviour
     public int health;
     public float speed;
 
+    private Vector2 input;
+    private SpriteRenderer spriteRenderer;
+    public LayerMask groundLayer;
+    private Rigidbody2D rb;
     private Animator anim;
-    public GameObject bloodEffect;
 
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
         anim.SetBool("isRunning", true);
     }
 
@@ -26,10 +31,19 @@ public class Enemy : MonoBehaviour
         transform.Translate(Vector2.left * speed * Time.deltaTime);
     }
 
-    public void TakeDamage(int damage) 
+    public void TakeDamage(int damage)
     {
-        Instantiate(bloodEffect, transform.position, Quaternion.identity);
         health -= damage;
         Debug.Log("damage taken!");
+    }
+
+    private bool IsWalkable(Vector2 targetPos)
+    {
+        if (Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) != null)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

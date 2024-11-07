@@ -17,53 +17,38 @@ public class Attack : MonoBehaviour
 
     void Start()
     {
-        // Search for the Player_Controller in the same GameObject or parent
         playerController = GetComponentInParent<Player_Controller>();
-
-        // Check if playerController was found, to avoid NullReferenceException
-        if (playerController == null)
-        {
-            Debug.LogError("Player_Controller component not found. Please ensure it's attached to the player GameObject or its parent.");
-        }
+        playerAnim = GetComponent<Animator>();
     }
-
 
     void Update()
     {
-        if (timeBtwAttack <= 0)
+        if (Input.GetKey(KeyCode.Space) && timeBtwAttack <= 0)
         {
-            if (Input.GetKey(KeyCode.Space))
+            playerAnim.SetBool("isSpace", true);
+
+            float lastMoveX = playerController.GetLastMoveX();
+            float lastMoveY = playerController.GetLastMoveY();
+
+            playerAnim.SetFloat("moveX", lastMoveX);
+            playerAnim.SetFloat("moveY", lastMoveY);
+
+            Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
+            for (int i = 0; i < enemiesToDamage.Length; i++)
             {
-                // Trigger the attack animation and set the facing direction based on last movement
-                playerAnim.SetBool("isSpace", true);
-
-                // Get the last facing direction from Player_Controller
-                float lastMoveX = playerController.GetLastMoveX();
-                float lastMoveY = playerController.GetLastMoveY();
-
-                playerAnim.SetFloat("moveX", lastMoveX);
-                playerAnim.SetFloat("moveY", lastMoveY);
-
-                // Deal damage to enemies within range
-                Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-                for (int i = 0; i < enemiesToDamage.Length; i++)
-                {
-                    enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
-                }
-
-                // Reset the attack cooldown
-                timeBtwAttack = startBtwAttack;
+                enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
             }
+
+            timeBtwAttack = startBtwAttack;
         }
         else
         {
-            timeBtwAttack -= Time.deltaTime;
+            playerAnim.SetBool("isSpace", false);
         }
 
-        // Reset isSpace to prevent continuous triggering
-        if (timeBtwAttack <= startBtwAttack - 0.1f)
+        if (timeBtwAttack > 0)
         {
-            playerAnim.SetBool("isSpace", false);
+            timeBtwAttack -= Time.deltaTime;
         }
     }
 
