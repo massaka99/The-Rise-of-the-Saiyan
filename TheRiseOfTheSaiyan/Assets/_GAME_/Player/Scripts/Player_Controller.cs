@@ -34,16 +34,13 @@ public class Player_Controller : MonoBehaviour
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
 
-
         bool isMoving = input != Vector2.zero;
         animator.SetBool("isMoving", isMoving);
 
-        float currentSpeed = moveSpeed;
+        bool isRunning = Input.GetKey(KeyCode.LeftShift) && isMoving;
+        animator.SetBool("isRunning", isRunning);
 
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            currentSpeed *= runMultiplier;
-        }
+        float currentSpeed = isRunning ? moveSpeed * runMultiplier : moveSpeed;
 
         if (isMoving)
         {
@@ -80,7 +77,6 @@ public class Player_Controller : MonoBehaviour
             }
         }
 
-        // Ensure the last move direction is saved in the animator
         animator.SetFloat("lastMoveX", lastMoveX);
         animator.SetFloat("lastMoveY", lastMoveY);
 
@@ -111,7 +107,6 @@ public class Player_Controller : MonoBehaviour
         return true;
     }
 
-    // Public getters to access the last facing direction
     public float GetLastMoveX() => lastMoveX;
     public float GetLastMoveY() => lastMoveY;
 }
