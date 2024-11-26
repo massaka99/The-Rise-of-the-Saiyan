@@ -7,7 +7,6 @@ public class TeleportControllerBoss : MonoBehaviour
     public Transform teleportDestination;
     private AudioSource audioSource;
     private Animator playerAnimator;
-    private Player_Controller playerController;
 
     private void Awake()
     {
@@ -20,7 +19,7 @@ public class TeleportControllerBoss : MonoBehaviour
         if (player != null)
         {
             playerAnimator = player.GetComponent<Animator>();
-            playerController = player.GetComponent<Player_Controller>();
+
         }
     }
 
@@ -32,13 +31,7 @@ public class TeleportControllerBoss : MonoBehaviour
             {
                 audioSource.Play();
             }
+            other.transform.position = teleportDestination.position;
         }
-    }
-
-    private IEnumerator TeleportAfterAnimation(Collider2D player)
-    {
-        yield return new WaitForSeconds(playerAnimator.GetCurrentAnimatorStateInfo(0).length);
-
-        player.transform.position = teleportDestination.position;
     }
 }

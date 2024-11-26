@@ -18,7 +18,7 @@ public class Player_Controller : MonoBehaviour
     private float lastMoveX = 0f;
     private float lastMoveY = -1f;
 
-    private AudioManager audioManager;
+    AudioManager audioManager;
 
     private void Awake()
     {
@@ -27,6 +27,7 @@ public class Player_Controller : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        Interact();
     }
 
     public void HandleUpdate()
