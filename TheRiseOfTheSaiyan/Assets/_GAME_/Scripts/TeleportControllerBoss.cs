@@ -32,12 +32,6 @@ public class TeleportControllerBoss : MonoBehaviour
             {
                 audioSource.Play();
             }
-
-            if (playerAnimator != null && playerController != null)
-            {
-                playerController.StartTeleport(); 
-                StartCoroutine(TeleportAfterAnimation(other));
-            }
         }
     }
 
@@ -46,7 +40,5 @@ public class TeleportControllerBoss : MonoBehaviour
         yield return new WaitForSeconds(playerAnimator.GetCurrentAnimatorStateInfo(0).length);
 
         player.transform.position = teleportDestination.position;
-
-        playerController.EndTeleport();
     }
 }

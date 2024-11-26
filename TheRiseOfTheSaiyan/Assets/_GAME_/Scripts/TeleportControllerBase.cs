@@ -35,7 +35,6 @@ public class TeleportControllerBase : MonoBehaviour
 
             if (playerAnimator != null && playerController != null)
             {
-                playerController.StartTeleport(); 
                 StartCoroutine(TeleportAfterAnimation(other));
             }
         }
@@ -46,7 +45,5 @@ public class TeleportControllerBase : MonoBehaviour
         yield return new WaitForSeconds(playerAnimator.GetCurrentAnimatorStateInfo(0).length);
 
         player.transform.position = teleportDestination.position;
-
-        playerController.EndTeleport();
     }
 }
