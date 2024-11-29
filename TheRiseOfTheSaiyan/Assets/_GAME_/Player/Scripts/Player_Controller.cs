@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
@@ -11,6 +12,7 @@ public class Player_Controller : MonoBehaviour
     private Vector2 input;
     private Animator animator;
     public LayerMask groundLayer;
+    public LayerMask battleLayer;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;
@@ -67,6 +69,8 @@ public class Player_Controller : MonoBehaviour
             {
                 audioSource.Play();
             }
+            CheckForEncounters();
+
         }
         else
         {
@@ -110,4 +114,15 @@ public class Player_Controller : MonoBehaviour
 
     public float GetLastMoveX() => lastMoveX;
     public float GetLastMoveY() => lastMoveY;
+
+    private void CheckForEncounters()
+    {
+        Collider2D battleZone = Physics2D.OverlapCircle(transform.position, 0.01f, battleLayer);
+
+        if (battleZone != null)
+        {
+            Debug.Log("A battle has started");
+        }
+    }
+
 }
