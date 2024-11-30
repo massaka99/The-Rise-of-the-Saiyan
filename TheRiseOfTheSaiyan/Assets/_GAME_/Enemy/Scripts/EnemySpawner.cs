@@ -5,14 +5,15 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _enemyPrefab;
-
-    [SerializeField] private float _minimumSpawnTime;
+    private GameObject enemyPrefab;
 
     [SerializeField]
-    private float _maximumSpawnTime;
+    private float minimumSpawnTime;
 
-    private float _timeUntilSpawn;
+    [SerializeField]
+    private float maximumSpawnTime;
+
+    private float timeUntilSpawn;
 
     void Awake()
     {
@@ -21,18 +22,35 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        _timeUntilSpawn -= Time.deltaTime;
+        timeUntilSpawn -= Time.deltaTime;
 
-        if (_timeUntilSpawn <= 0)
+        if (timeUntilSpawn <= 0)
         {
-            Instantiate(_enemyPrefab, transform.position, Quaternion.identity);
+            SpawnEnemy();
             SetTimeUntilSpawn();
         }
     }
 
+    private void SpawnEnemy()
+    {
+        // Instantiate the enemy at the spawner's position
+        GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+
+        // Ensure the enemy has a health bar prefab attached
+        Enemy enemyScript = newEnemy.GetComponent<Enemy>();
+        if (enemyScript == null)
+        {
+            Debug.LogWarning("Spawned enemy does not have an Enemy script attached.");
+            return;
+        }
+
+        // Optionally set additional properties on the spawned enemy (if needed)
+        Debug.Log("Enemy spawned successfully.");
+    }
+
     private void SetTimeUntilSpawn()
     {
-        _timeUntilSpawn = Random.Range(_minimumSpawnTime, _maximumSpawnTime);
-
+        // Specify UnityEngine.Random to avoid ambiguity
+        timeUntilSpawn = UnityEngine.Random.Range(minimumSpawnTime, maximumSpawnTime);
     }
 }
