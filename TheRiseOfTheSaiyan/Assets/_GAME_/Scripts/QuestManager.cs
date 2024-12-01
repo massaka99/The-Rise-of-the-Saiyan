@@ -4,10 +4,16 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
     
+    // Chichi's Quest
     public int saibamenKilled { get; private set; }
     public bool isQuestActive { get; private set; }
     public bool isQuestCompleted { get; private set; }
     private const int REQUIRED_KILLS = 10;
+
+    // Gohan's Quest
+    public bool isVegetaQuestActive { get; private set; }
+    public bool isVegetaQuestCompleted { get; private set; }
+    public bool hasSpokenToGohanBeforeChichiQuest { get; private set; }
 
     private void Awake()
     {
@@ -22,6 +28,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    // Chichi's Quest Methods
     public void StartSaibamenQuest()
     {
         isQuestActive = true;
@@ -45,10 +52,41 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    public void ResetQuest()
+    // Gohan's Quest Methods
+    public void StartVegetaQuest()
     {
+        if (isQuestCompleted) // Only if Chichi's quest is completed
+        {
+            isVegetaQuestActive = true;
+            isVegetaQuestCompleted = false;
+            Debug.Log("Vegeta Quest Started");
+        }
+    }
+
+    public void CompleteVegetaQuest()
+    {
+        if (isVegetaQuestActive)
+        {
+            isVegetaQuestCompleted = true;
+            Debug.Log("Vegeta Quest Completed!");
+        }
+    }
+
+    public void SetGohanFirstInteraction()
+    {
+        hasSpokenToGohanBeforeChichiQuest = true;
+    }
+
+    public void ResetQuests()
+    {
+        // Reset Chichi's Quest
         isQuestActive = false;
         saibamenKilled = 0;
         isQuestCompleted = false;
+
+        // Reset Gohan's Quest
+        isVegetaQuestActive = false;
+        isVegetaQuestCompleted = false;
+        hasSpokenToGohanBeforeChichiQuest = false;
     }
 } 
