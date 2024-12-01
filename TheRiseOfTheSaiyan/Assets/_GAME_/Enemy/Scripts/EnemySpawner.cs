@@ -33,24 +33,18 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        // Instantiate the enemy at the spawner's position
         GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
 
-        // Ensure the enemy has a health bar prefab attached
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
         if (enemyScript == null)
         {
             Debug.LogWarning("Spawned enemy does not have an Enemy script attached.");
             return;
         }
-
-        // Optionally set additional properties on the spawned enemy (if needed)
-        Debug.Log("Enemy spawned successfully.");
     }
 
     private void SetTimeUntilSpawn()
     {
-        // Specify UnityEngine.Random to avoid ambiguity
         timeUntilSpawn = UnityEngine.Random.Range(minimumSpawnTime, maximumSpawnTime);
     }
 }

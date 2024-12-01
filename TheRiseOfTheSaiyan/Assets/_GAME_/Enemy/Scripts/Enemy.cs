@@ -122,16 +122,19 @@ public class Enemy : MonoBehaviour
             anim.SetTrigger("Die");
         }
 
-        // Destroy the health bar when the enemy dies
         if (healthBarInstance != null)
         {
             Destroy(healthBarInstance.gameObject);
         }
 
-        // Notify any listeners
-        OnEnemyKilled?.Invoke(this);
+        // Only increment kill count when enemy actually dies
+        if (gameObject.CompareTag("Enemy"))  // Make sure Saibamen have the "Enemy" tag
+        {
+            QuestManager.Instance?.IncrementSaibamenKilled();
+            Debug.Log("Saibaman killed!");  // Debug log to verify kills
+        }
 
-        // Destroy the enemy object
+        OnEnemyKilled?.Invoke(this);
         Destroy(gameObject, 0.5f);
     }
 

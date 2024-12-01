@@ -7,7 +7,7 @@ public class RegionMusic : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) // Assuming Goku has the tag "Player"
+        if (other.CompareTag("Player")) 
         {
             AudioManager audioManager = FindObjectOfType<AudioManager>();
             if (audioManager != null)
