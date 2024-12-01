@@ -28,7 +28,6 @@ public class Player_Controller : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         Interact();
     }
 
@@ -118,11 +117,6 @@ public class Player_Controller : MonoBehaviour
     private void CheckForEncounters()
     {
         Collider2D battleZone = Physics2D.OverlapCircle(transform.position, 0.01f, battleLayer);
-
-        if (battleZone != null)
-        {
-            Debug.Log("A battle has started");
-        }
     }
 
 }

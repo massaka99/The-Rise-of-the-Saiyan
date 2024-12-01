@@ -177,7 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55a251978abacb4b859accdde6c5f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
+  slider: {fileID: 5944724497913522368}
+  target: {fileID: 4629472181602616151, guid: 1d51bccc45148d042aabc51ec58fd0fd, type: 3}
 --- !u!1 &5662949447135269764
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,6 +287,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: -5, y: -7.3339}
+  m_SizeDelta: {x: -20, y: 14.668}
   m_Pivot: {x: 0.5, y: 0.5}

@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float health = 100f;
 
-    [SerializeField] private GameObject healthBarPrefab;  // Reference to the health bar prefab (which includes Canvas and Slider)
+    [SerializeField] private GameObject healthBarPrefab;
     private FloatingHealthBar healthBarInstance;
 
     [SerializeField] private float moveSpeed = 1f;
@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     private float randomDirectionChangeInterval = 2f;
     private float timeSinceLastDirectionChange;
+    private bool isKnockedBack = false; 
 
     private void Awake()
     {
@@ -32,26 +33,20 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _playerAwarenessController = GetComponentInChildren<PlayerAwarenessController>();
 
-        health = maxHealth; // Initialize health
+        health = maxHealth;
     }
 
     private void Start()
     {
         moveDirection = UnityEngine.Random.insideUnitCircle.normalized;
 
-        // Check if healthBarInstance is not already assigned.
-        // Only instantiate a new health bar if it's not already assigned.
         if (healthBarInstance == null && healthBarPrefab != null)
         {
-            // Instantiate the Canvas with the health bar and assign it
             GameObject healthBarCanvas = Instantiate(healthBarPrefab, FindObjectOfType<Canvas>().transform);
             healthBarInstance = healthBarCanvas.GetComponentInChildren<FloatingHealthBar>();
 
-            // Set the health bar's initial health values
             healthBarInstance.UpdateHealthBar(health, maxHealth);
-
-            // Set the position of the health bar above the enemy
-            healthBarCanvas.transform.position = transform.position + new Vector3(0, 1, 0); // Adjust offset as needed
+            healthBarInstance.AssignTarget(transform);
         }
     }
 
@@ -62,14 +57,17 @@ public class Enemy : MonoBehaviour
             if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
             {
                 anim.SetTrigger("Die");
-                Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length); // Destroy after animation
+                Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
             }
             return;
         }
 
-        UpdateTargetDirection();
-        Move();
-        RotateTowardsTarget();
+        if (!isKnockedBack) // Only move if not being knocked back
+        {
+            UpdateTargetDirection();
+            Move();
+            RotateTowardsTarget();
+        }
     }
 
     private void Update()
@@ -86,12 +84,6 @@ public class Enemy : MonoBehaviour
         {
             SetRandomDirection();
         }
-
-        // Update the health bar's position (keep it above the enemy)
-        if (healthBarInstance != null)
-        {
-            healthBarInstance.transform.position = transform.position + new Vector3(0, 1, 0);
-        }
     }
 
     private void SetRandomDirection()
@@ -100,19 +92,42 @@ public class Enemy : MonoBehaviour
         timeSinceLastDirectionChange = 0f;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Vector2? knockbackDirection = null)
     {
+        // Reduce health
         health -= damage;
 
-        if (healthBarInstance != null)
-        {
-            healthBarInstance.UpdateHealthBar(health, maxHealth); // Update the health bar when damage is taken
-        }
-
+        // Check if the enemy is dead
         if (health <= 0)
         {
             Die();
         }
+        else if (knockbackDirection.HasValue)
+        {
+            // Apply knockback if a direction is provided
+            Knockback(knockbackDirection.Value);
+        }
+
+        // Update health bar
+        if (healthBarInstance != null)
+        {
+            healthBarInstance.UpdateHealthBar(health, maxHealth);
+        }
+    }
+
+    private void Knockback(Vector2 direction)
+    {
+        if (rb != null) // Ensure the Rigidbody2D exists
+        {
+            float knockbackForce = 5f; // Adjust the force as needed
+            rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
+        }
+    }
+
+
+    private void EndKnockback()
+    {
+        isKnockedBack = false;
     }
 
     private void Die()
@@ -122,16 +137,13 @@ public class Enemy : MonoBehaviour
             anim.SetTrigger("Die");
         }
 
-        // Destroy the health bar when the enemy dies
         if (healthBarInstance != null)
         {
             Destroy(healthBarInstance.gameObject);
         }
 
-        // Notify any listeners
         OnEnemyKilled?.Invoke(this);
 
-        // Destroy the enemy object
         Destroy(gameObject, 0.5f);
     }
 

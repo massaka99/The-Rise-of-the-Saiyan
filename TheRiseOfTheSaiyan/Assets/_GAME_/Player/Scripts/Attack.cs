@@ -1,80 +1,104 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    private float timeBtwAttack;
-    public float startBtwAttack;
+    [Header("Attack Settings")]
+    public float attackRange = 1f;        
+    public int damage = 10;              
+    public float attackCooldown = 1f;    
+    public Transform attackPos;          
+    public LayerMask whatIsEnemies;      
 
-    public float attackRange;
-    public Transform attackPos;
-    public LayerMask whatIsEnemies;
-    public Animator playerAnim;
-    public int damage;
+    [Header("Audio")]
+    public AudioClip punchSound;         
+    private AudioSource audioSource;     
 
+    [Header("Animation")]
+    public Animator playerAnim;          
+
+    private float timeSinceLastAttack;   
     private Player_Controller playerController;
-
-    public AudioClip punchSound;
-    private AudioSource audioSource;
 
     void Start()
     {
         playerController = GetComponentInParent<Player_Controller>();
         playerAnim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
 
-        // Ensure an AudioSource is attached
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
+        timeSinceLastAttack = 0f;
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space) && timeBtwAttack <= 0)
+        timeSinceLastAttack -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Space) && timeSinceLastAttack <= 0)
         {
-            // Set animation trigger
-            playerAnim.SetBool("isSpace", true);
-
-            // Get last movement direction (even if standing still)
-            float lastMoveX = playerController.GetLastMoveX();
-            float lastMoveY = playerController.GetLastMoveY();
-
-            playerAnim.SetFloat("moveX", lastMoveX);
-            playerAnim.SetFloat("moveY", lastMoveY);
-
-            // Always play the punch sound if available
-            if (punchSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(punchSound);
-            }
-
-            // Perform the attack logic
-            Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-            for (int i = 0; i < enemiesToDamage.Length; i++)
-            {
-                enemiesToDamage[i].GetComponent<Enemy>()?.TakeDamage(damage);
-            }
-
-            // Reset attack cooldown
-            timeBtwAttack = startBtwAttack;
+            PerformAttack();
+            timeSinceLastAttack = attackCooldown; 
         }
-        else
-        {
-            playerAnim.SetBool("isSpace", false);
-        }
+    }
 
-        if (timeBtwAttack > 0)
+    private void PerformAttack()
+    {
+        // Trigger attack animation
+        SetAttackAnimation();
+
+        // Play attack sound
+        PlayAttackSound();
+
+        // Detect enemies in attack range
+        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
+
+        foreach (var enemy in enemiesToDamage)
         {
-            timeBtwAttack -= Time.deltaTime;
+            if (enemy.TryGetComponent(out Enemy enemyScript))
+            {
+                // Calculate knockback direction
+                Vector2 knockbackDirection = (enemy.transform.position - attackPos.position).normalized;
+
+                // Apply damage and knockback
+                enemyScript.TakeDamage(damage, knockbackDirection);
+            }
+        }
+    }
+
+
+    private void SetAttackAnimation()
+    {
+        if (playerAnim == null) return;
+
+        float lastMoveX = playerController.GetLastMoveX();
+        float lastMoveY = playerController.GetLastMoveY();
+
+        playerAnim.SetBool("isSpace", true);
+        playerAnim.SetFloat("moveX", lastMoveX);
+        playerAnim.SetFloat("moveY", lastMoveY);
+
+        StartCoroutine(ResetAttackAnimation());
+    }
+
+    private IEnumerator ResetAttackAnimation()
+    {
+        yield return new WaitForSeconds(0.1f);
+        playerAnim.SetBool("isSpace", false);
+    }
+
+    private void PlayAttackSound()
+    {
+        if (audioSource != null && punchSound != null)
+        {
+            audioSource.PlayOneShot(punchSound);
         }
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPos.position, attackRange);
+        if (attackPos != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(attackPos.position, attackRange);
+        }
     }
 }
