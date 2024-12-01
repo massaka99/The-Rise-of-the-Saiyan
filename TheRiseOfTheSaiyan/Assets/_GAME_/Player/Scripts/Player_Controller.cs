@@ -117,6 +117,7 @@ public class Player_Controller : MonoBehaviour
     private void CheckForEncounters()
     {
         Collider2D battleZone = Physics2D.OverlapCircle(transform.position, 0.01f, battleLayer);
+
     }
 
 }

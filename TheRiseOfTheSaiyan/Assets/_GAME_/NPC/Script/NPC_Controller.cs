@@ -3,32 +3,32 @@ using UnityEngine;
 
 public class NPC_Controller : MonoBehaviour, Interactable
 {
-    [SerializeField] private List<Dialog> dialogs;
-    private int currentDialogIndex = 0;
-    private bool isLocked = false;
+    [SerializeField] private Dialog questStartDialog;
+    [SerializeField] private Dialog questInProgressDialog;
+    [SerializeField] private Dialog questCompletedDialog;
+    
     private bool isInteracting = false;
 
     public void Interact()
     {
         if (isInteracting) return;
-
         isInteracting = true;
-        if (!isLocked)
-        {
-            StartCoroutine(Dialog_Manager.Instance.ShowDialog(dialogs[currentDialogIndex]));
 
-            if (currentDialogIndex < dialogs.Count - 1)
+        if (QuestManager.Instance != null)
+        {
+            if (!QuestManager.Instance.isQuestActive)
             {
-                currentDialogIndex++;
+                StartCoroutine(Dialog_Manager.Instance.ShowDialog(questStartDialog));
+                QuestManager.Instance.StartSaibamenQuest();
+            }
+            else if (QuestManager.Instance.isQuestCompleted)
+            {
+                StartCoroutine(Dialog_Manager.Instance.ShowDialog(questCompletedDialog));
             }
             else
             {
-                isLocked = true;
+                StartCoroutine(Dialog_Manager.Instance.ShowDialog(questInProgressDialog));
             }
-        }
-        else
-        {
-            StartCoroutine(Dialog_Manager.Instance.ShowDialog(dialogs[currentDialogIndex]));
         }
 
         StartCoroutine(ResetInteraction());
@@ -36,13 +36,7 @@ public class NPC_Controller : MonoBehaviour, Interactable
 
     private System.Collections.IEnumerator ResetInteraction()
     {
-        yield return new WaitForSeconds(1); // Adjust time as needed
+        yield return new WaitForSeconds(1);
         isInteracting = false;
-    }
-
-    public void UnlockDialog()
-    {
-        isLocked = false;
-        currentDialogIndex = 0;
     }
 }

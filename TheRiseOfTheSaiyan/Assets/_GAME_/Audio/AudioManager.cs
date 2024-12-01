@@ -7,26 +7,26 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource SFXSource;
 
     [Header("---------- Audio Clip ----------")]
-    public AudioClip background; // Default background music
+    public AudioClip background; 
     public AudioClip collision;
     public AudioClip walk;
     public AudioClip Teleport;
 
     private void Start()
     {
-        PlayMusic(background); // Start with default music
+        PlayMusic(background); 
     }
 
     public void PlayMusic(AudioClip newMusic)
     {
         if (musicSource.isPlaying)
         {
-            musicSource.Stop(); // Stop current music
+            musicSource.Stop(); 
         }
-        if (musicSource.clip != newMusic) // Check if the new clip is different
+        if (musicSource.clip != newMusic) 
         {
-            musicSource.clip = newMusic; // Assign new clip
-            musicSource.Play(); // Play new music
+            musicSource.clip = newMusic; 
+            musicSource.Play(); 
         }
     }
 

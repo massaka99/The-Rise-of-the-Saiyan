@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
 
     private float randomDirectionChangeInterval = 2f;
     private float timeSinceLastDirectionChange;
-    private bool isKnockedBack = false; 
+    private bool isKnockedBack = false;
 
     private void Awake()
     {
@@ -142,8 +142,14 @@ public class Enemy : MonoBehaviour
             Destroy(healthBarInstance.gameObject);
         }
 
-        OnEnemyKilled?.Invoke(this);
+        // Only increment kill count when enemy actually dies
+        if (gameObject.CompareTag("Enemy"))  // Make sure Saibamen have the "Enemy" tag
+        {
+            QuestManager.Instance?.IncrementSaibamenKilled();
+            Debug.Log("Saibaman killed!");  // Debug log to verify kills
+        }
 
+        OnEnemyKilled?.Invoke(this);
         Destroy(gameObject, 0.5f);
     }
 

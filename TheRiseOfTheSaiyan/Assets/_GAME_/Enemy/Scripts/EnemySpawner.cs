@@ -41,7 +41,6 @@ public class EnemySpawner : MonoBehaviour
             Debug.LogWarning("Spawned enemy does not have an Enemy script attached.");
             return;
         }
-
     }
 
     private void SetTimeUntilSpawn()
