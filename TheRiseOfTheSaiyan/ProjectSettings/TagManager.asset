@@ -7,6 +7,7 @@ TagManager:
   - Audio
   - Enemy
   - NPC
+  - Vegeta
   layers:
   - Default
   - TransparentFX

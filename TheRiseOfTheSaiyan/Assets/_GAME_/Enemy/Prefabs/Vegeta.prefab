@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2874535312468497805}
   m_Layer: 6
   m_Name: Vegeta
-  m_TagString: Enemy
+  m_TagString: Vegeta
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 1222616941, guid: 081182f1137e4f54aba5bbf63b3715bd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.125, y: 2}
@@ -146,7 +146,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

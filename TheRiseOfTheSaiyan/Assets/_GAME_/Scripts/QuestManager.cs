@@ -65,7 +65,7 @@ public class QuestManager : MonoBehaviour
 
     public void CompleteVegetaQuest()
     {
-        if (isVegetaQuestActive)
+        if (isVegetaQuestActive && !isVegetaQuestCompleted)
         {
             isVegetaQuestCompleted = true;
             Debug.Log("Vegeta Quest Completed!");

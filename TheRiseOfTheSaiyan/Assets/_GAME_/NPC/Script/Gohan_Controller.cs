@@ -21,13 +21,15 @@ public class Gohan_Controller : MonoBehaviour, Interactable
             if (!QuestManager.Instance.isQuestCompleted)
             {
                 // If Chichi's quest isn't completed
-                if (!QuestManager.Instance.hasSpokenToGohanBeforeChichiQuest)
+                if (!QuestManager.Instance.hasSpokenToGohanBeforeChichiQuest && !QuestManager.Instance.isQuestActive)
                 {
+                    // First interaction before getting Chichi's quest
                     StartCoroutine(Dialog_Manager.Instance.ShowDialog(beforeChichiQuestDialog));
                     QuestManager.Instance.SetGohanFirstInteraction();
                 }
-                else
+                else if (QuestManager.Instance.isQuestActive)
                 {
+                    // Chichi's quest is active but not completed
                     StartCoroutine(Dialog_Manager.Instance.ShowDialog(remindChichiQuestDialog));
                 }
             }

@@ -133,7 +133,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        if (anim != null)
+        if (health <= 0)
         {
             anim.SetTrigger("Die");
         }
@@ -147,6 +147,11 @@ public class Enemy : MonoBehaviour
         {
             QuestManager.Instance?.IncrementSaibamenKilled();
             Debug.Log("Saibaman killed!"); 
+        }
+        else if (gameObject.CompareTag("Vegeta"))
+        {
+            QuestManager.Instance?.CompleteVegetaQuest();
+            Debug.Log("Vegeta has been defeated!");
         }
 
         OnEnemyKilled?.Invoke(this);
