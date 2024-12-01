@@ -1,55 +1,70 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int health;
+    public static event Action<Enemy> OnEnemyKilled;
 
-    [SerializeField]
-    private float _speed;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float health = 100f;
 
-    [SerializeField]
-    private float _rotationSpeed;
+    [SerializeField] private GameObject healthBarPrefab;  // Reference to the health bar prefab (which includes Canvas and Slider)
+    private FloatingHealthBar healthBarInstance;
+
+    [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float _rotationSpeed = 360f;
 
     private PlayerAwarenessController _playerAwarenessController;
-
-    private Vector2 _targetDirection;
+    private Vector2 moveDirection;
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private Animator anim;
 
-    public LayerMask groundLayer; // Used for collision checking with walkable areas
+    public LayerMask groundLayer;
 
+    private float randomDirectionChangeInterval = 2f;
+    private float timeSinceLastDirectionChange;
 
-    private float _randomDirectionChangeInterval = 2f; // Interval at which enemy changes direction
-    private float _timeSinceLastDirectionChange; // Timer to track when to change direction
-
-    private float nextDirectionChangeTime; // Time to track when to change direction next
-
-    void Start()
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         _playerAwarenessController = GetComponentInChildren<PlayerAwarenessController>();
 
-        _targetDirection = UnityEngine.Random.insideUnitCircle.normalized;
-        nextDirectionChangeTime = Time.time + _randomDirectionChangeInterval; // Initialize the next direction change time
+        health = maxHealth; // Initialize health
+    }
+
+    private void Start()
+    {
+        moveDirection = UnityEngine.Random.insideUnitCircle.normalized;
+
+        // Check if healthBarInstance is not already assigned.
+        // Only instantiate a new health bar if it's not already assigned.
+        if (healthBarInstance == null && healthBarPrefab != null)
+        {
+            // Instantiate the Canvas with the health bar and assign it
+            GameObject healthBarCanvas = Instantiate(healthBarPrefab, FindObjectOfType<Canvas>().transform);
+            healthBarInstance = healthBarCanvas.GetComponentInChildren<FloatingHealthBar>();
+
+            // Set the health bar's initial health values
+            healthBarInstance.UpdateHealthBar(health, maxHealth);
+
+            // Set the position of the health bar above the enemy
+            healthBarCanvas.transform.position = transform.position + new Vector3(0, 1, 0); // Adjust offset as needed
+        }
     }
 
     private void FixedUpdate()
     {
         if (health <= 0)
         {
-            // Play death animation and then destroy the enemy after it's finished
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die")) // Ensure that the die animation isn't playing already
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
             {
-                anim.SetTrigger("Die"); // Trigger death animation
-                Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length); // Destroy after animation is complete
+                anim.SetTrigger("Die");
+                Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length); // Destroy after animation
             }
-            return; // Stop further updates if the enemy is dead
+            return;
         }
 
         UpdateTargetDirection();
@@ -57,102 +72,101 @@ public class Enemy : MonoBehaviour
         RotateTowardsTarget();
     }
 
-    void Update()
+    private void Update()
     {
-        if (health <= 0)
+        if (health <= 0) return;
+
+        if (moveDirection.x != 0)
         {
-            return; // Skip other updates when the enemy is dead
+            spriteRenderer.flipX = moveDirection.x < 0;
         }
 
-        // Flip sprite based on movement direction
-        if (_targetDirection.x != 0)
+        timeSinceLastDirectionChange += Time.deltaTime;
+        if (timeSinceLastDirectionChange >= randomDirectionChangeInterval)
         {
-            spriteRenderer.flipX = _targetDirection.x < 0;
+            SetRandomDirection();
         }
 
-        // Change direction after a set interval
-        if (Time.time >= nextDirectionChangeTime)
+        // Update the health bar's position (keep it above the enemy)
+        if (healthBarInstance != null)
         {
-            SetRandomTargetDirection();
+            healthBarInstance.transform.position = transform.position + new Vector3(0, 1, 0);
         }
     }
 
-    private void SetRandomTargetDirection()
+    private void SetRandomDirection()
     {
-        // Set a new random direction
-        _targetDirection = UnityEngine.Random.insideUnitCircle.normalized;
-        nextDirectionChangeTime = Time.time + _randomDirectionChangeInterval; // Reset the direction change timer
+        moveDirection = UnityEngine.Random.insideUnitCircle.normalized;
+        timeSinceLastDirectionChange = 0f;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         health -= damage;
-        Debug.Log("Enemy took damage!");
+
+        if (healthBarInstance != null)
+        {
+            healthBarInstance.UpdateHealthBar(health, maxHealth); // Update the health bar when damage is taken
+        }
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        if (anim != null)
+        {
+            anim.SetTrigger("Die");
+        }
+
+        // Destroy the health bar when the enemy dies
+        if (healthBarInstance != null)
+        {
+            Destroy(healthBarInstance.gameObject);
+        }
+
+        // Notify any listeners
+        OnEnemyKilled?.Invoke(this);
+
+        // Destroy the enemy object
+        Destroy(gameObject, 0.5f);
     }
 
     private bool IsWalkable(Vector2 targetPos)
     {
-        // Check if the target position is walkable (not blocked by obstacles in groundLayer)
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) != null)
-        {
-            return false;
-        }
-        return true;
+        return Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) == null;
     }
 
     private void Move()
     {
-        // Move the enemy smoothly towards the target direction
-        Vector2 targetPos = rb.position + _targetDirection * _speed * Time.fixedDeltaTime;
+        Vector2 targetPos = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
 
-        // Ensure the target position is walkable
         if (IsWalkable(targetPos))
         {
-            // Smoothly move the enemy to the target position using MoveTowards to avoid jitter
-            rb.MovePosition(Vector2.MoveTowards(rb.position, targetPos, _speed * Time.fixedDeltaTime));
+            rb.MovePosition(Vector2.MoveTowards(rb.position, targetPos, moveSpeed * Time.fixedDeltaTime));
         }
         else
         {
-            // If blocked, change direction and try again
-            SetRandomTargetDirection();
+            SetRandomDirection();
         }
     }
 
     private void UpdateTargetDirection()
     {
-        // Check if the enemy is aware of the player (if true, move towards the player)
-        if (_playerAwarenessController.AwareOfPlayer)
+        if (_playerAwarenessController != null && _playerAwarenessController.AwareOfPlayer)
         {
-            _targetDirection = _playerAwarenessController.DirectionToPlayer;
-        }
-        else
-        {
-            // Otherwise, the enemy moves in a random direction
-            _timeSinceLastDirectionChange += Time.deltaTime;
-            if (_timeSinceLastDirectionChange >= _randomDirectionChangeInterval)
-            {
-                Vector2 newDirection;
-                do
-                {
-                    newDirection = UnityEngine.Random.insideUnitCircle.normalized; // Generate a random direction
-                }
-                while (!IsWalkable((Vector2)transform.position + newDirection)); // Ensure it's walkable
-
-                _targetDirection = newDirection;
-                _timeSinceLastDirectionChange = 0f; // Reset the timer
-            }
+            moveDirection = _playerAwarenessController.DirectionToPlayer.normalized;
         }
     }
 
     private void RotateTowardsTarget()
     {
-        if (_targetDirection == Vector2.zero)
-        {
-            return; // Do nothing if there's no target direction
-        }
+        if (moveDirection == Vector2.zero) return;
 
-        // Rotate the enemy to face the direction it's moving towards
-        float angle = Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         rb.SetRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime));
     }
