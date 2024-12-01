@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8273411698506283282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +118,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5332643781807529967, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
+      propertyPath: slider
+      value: 
+      objectReference: {fileID: 5668006777513638393}
     - target: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
       propertyPath: m_Name
       value: HealthBar
@@ -212,3 +216,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6477378647137782752, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
   m_PrefabInstance: {fileID: 2078175164004454713}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5668006777513638393 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5944724497913522368, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
+  m_PrefabInstance: {fileID: 2078175164004454713}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
