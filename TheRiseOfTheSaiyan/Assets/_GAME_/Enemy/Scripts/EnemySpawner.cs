@@ -1,19 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject enemyPrefab;
+    [SerializeField] private GameObject enemyPrefab;  
+    [SerializeField] private float minimumSpawnTime = 2f;  
+    [SerializeField] private float maximumSpawnTime = 5f;  
 
-    [SerializeField]
-    private float minimumSpawnTime;
+    [SerializeField] private int maxEnemies = 10;  
+    [SerializeField] private bool isLimitless = false;  
 
-    [SerializeField]
-    private float maximumSpawnTime;
-
-    private float timeUntilSpawn;
+    private float timeUntilSpawn;  
+    private int currentEnemyCount = 0; 
 
     void Awake()
     {
@@ -27,13 +27,21 @@ public class EnemySpawner : MonoBehaviour
         if (timeUntilSpawn <= 0)
         {
             SpawnEnemy();
+
             SetTimeUntilSpawn();
         }
     }
 
     private void SpawnEnemy()
     {
+        if (!isLimitless && currentEnemyCount >= maxEnemies)
+        {
+            return;  
+        }
+
         GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+
+        currentEnemyCount++;
 
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
         if (enemyScript == null)
@@ -46,5 +54,14 @@ public class EnemySpawner : MonoBehaviour
     private void SetTimeUntilSpawn()
     {
         timeUntilSpawn = UnityEngine.Random.Range(minimumSpawnTime, maximumSpawnTime);
+    }
+    public void SetLimitless(bool limitless)
+    {
+        isLimitless = limitless;
+    }
+
+    public void SetMaxEnemies(int max)
+    {
+        maxEnemies = max;
     }
 }

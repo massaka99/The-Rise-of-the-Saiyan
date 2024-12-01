@@ -18,7 +18,6 @@ public class PlayerAwarenessController : MonoBehaviour
         _player = FindObjectOfType<Player_Controller>().transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector2 enemyToPlayerVector = _player.position - transform.position;

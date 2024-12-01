@@ -62,7 +62,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (!isKnockedBack) // Only move if not being knocked back
+        if (!isKnockedBack) 
         {
             UpdateTargetDirection();
             Move();
@@ -125,6 +125,7 @@ public class Enemy : MonoBehaviour
     }
 
 
+
     private void EndKnockback()
     {
         isKnockedBack = false;
@@ -142,11 +143,10 @@ public class Enemy : MonoBehaviour
             Destroy(healthBarInstance.gameObject);
         }
 
-        // Only increment kill count when enemy actually dies
-        if (gameObject.CompareTag("Enemy"))  // Make sure Saibamen have the "Enemy" tag
+        if (gameObject.CompareTag("Enemy")) 
         {
             QuestManager.Instance?.IncrementSaibamenKilled();
-            Debug.Log("Saibaman killed!");  // Debug log to verify kills
+            Debug.Log("Saibaman killed!"); 
         }
 
         OnEnemyKilled?.Invoke(this);
