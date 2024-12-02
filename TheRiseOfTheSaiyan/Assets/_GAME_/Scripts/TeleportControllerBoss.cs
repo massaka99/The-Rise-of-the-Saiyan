@@ -2,36 +2,80 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeleportControllerBoss : MonoBehaviour
+public class TeleportControllerBoss : TeleportControllerBase
 {
-    public Transform teleportDestination;
-    private AudioSource audioSource;
-    private Animator playerAnimator;
+    [SerializeField] private Dialog questNotCompletedDialog;
+    [SerializeField] private Dialog gohanNotSpokenDialog;
+    private bool hasEnteredBossArea = false;
 
-    private void Awake()
+    protected override void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        base.Awake();
+        ValidateDialogs();
     }
 
-    private void Start()
+    private void ValidateDialogs()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        if (questNotCompletedDialog == null || questNotCompletedDialog.Lines.Count == 0)
         {
-            playerAnimator = player.GetComponent<Animator>();
-
+            Debug.LogError("questNotCompletedDialog is not set up properly in TeleportControllerBoss");
+        }
+        if (gohanNotSpokenDialog == null || gohanNotSpokenDialog.Lines.Count == 0)
+        {
+            Debug.LogError("gohanNotSpokenDialog is not set up properly in TeleportControllerBoss");
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    protected override bool CanTeleport()
+    {
+        if (QuestManager.Instance == null) 
+        {
+            Debug.LogError("QuestManager.Instance is null!");
+            return false;
+        }
+
+        // For entering boss area
+        if (!hasEnteredBossArea)
+        {
+            bool canEnter = QuestManager.Instance.isQuestCompleted && 
+                           QuestManager.Instance.isVegetaQuestActive;
+            Debug.Log($"Boss Teleporter - Quest Completed: {QuestManager.Instance.isQuestCompleted}, Vegeta Quest Active: {QuestManager.Instance.isVegetaQuestActive}, Can Enter: {canEnter}");
+            return canEnter;
+        }
+        // For leaving boss area
+        else
+        {
+            return QuestManager.Instance.isVegetaQuestCompleted;
+        }
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            if (audioSource != null)
+            bool canTeleport = CanTeleport();
+            Debug.Log($"Can teleport: {canTeleport}");
+
+            if (canTeleport)
             {
-                audioSource.Play();
+                if (audioSource != null)
+                {
+                    audioSource.Play();
+                }
+                hasEnteredBossArea = !hasEnteredBossArea;
+                TeleportControllerReturn.SetInBossArea(hasEnteredBossArea);
+                other.transform.position = teleportDestination.position;
             }
-            other.transform.position = teleportDestination.position;
+            else if (Dialog_Manager.Instance != null)
+            {
+                Dialog dialogToShow = !QuestManager.Instance.isQuestCompleted ? 
+                    questNotCompletedDialog : gohanNotSpokenDialog;
+
+                if (dialogToShow != null && dialogToShow.Lines.Count > 0)
+                {
+                    StartCoroutine(Dialog_Manager.Instance.ShowDialog(dialogToShow));
+                }
+            }
         }
     }
 }

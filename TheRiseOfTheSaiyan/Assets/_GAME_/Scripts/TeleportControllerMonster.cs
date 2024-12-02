@@ -2,36 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeleportControllerMonster : MonoBehaviour
+public class TeleportControllerMonster : TeleportControllerBase
 {
-    public Transform teleportDestination;
-    private AudioSource audioSource;
-    private Animator playerAnimator;
+    [SerializeField] private Dialog cantTeleportDialog;
 
-    private void Awake()
+    protected override void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-    }
-
-    private void Start()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        base.Awake();
+        if (cantTeleportDialog == null)
         {
-            playerAnimator = player.GetComponent<Animator>();
-
+            Debug.LogError("Please assign a Dialog in the Unity Inspector for TeleportControllerMonster");
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    protected override bool CanTeleport()
+    {
+        if (QuestManager.Instance == null) return false;
+        return QuestManager.Instance.isQuestActive;
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            if (audioSource != null)
+            if (!CanTeleport() && Dialog_Manager.Instance != null)
             {
-                audioSource.Play();
+                StartCoroutine(Dialog_Manager.Instance.ShowDialog(cantTeleportDialog));
+                return;
             }
-            other.transform.position = teleportDestination.position;
+            base.OnTriggerEnter2D(other);
         }
     }
 }

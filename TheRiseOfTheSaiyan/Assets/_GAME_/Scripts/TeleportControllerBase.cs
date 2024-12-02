@@ -5,27 +5,31 @@ using UnityEngine;
 public class TeleportControllerBase : MonoBehaviour
 {
     public Transform teleportDestination;
-    private AudioSource audioSource;
-    private Animator playerAnimator;
+    protected AudioSource audioSource;
+    protected Animator playerAnimator;
+    
+    protected virtual bool CanTeleport()
+    {
+        return true; // Base implementation always allows teleport
+    }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerAnimator = player.GetComponent<Animator>();
-
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && CanTeleport())
         {
             if (audioSource != null)
             {
