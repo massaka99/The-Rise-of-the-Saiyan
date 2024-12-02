@@ -57,9 +57,12 @@ TagManager:
   - name: Vegetation2
     uniqueID: 2061061463
     locked: 0
+  - name: Tree
+    uniqueID: 282837465
+    locked: 0
+  - name: House
+    uniqueID: 3257269769
+    locked: 0
   - name: Character
     uniqueID: 36044739
-    locked: 0
-  - name: Vegetation3
-    uniqueID: 4224441969
     locked: 0

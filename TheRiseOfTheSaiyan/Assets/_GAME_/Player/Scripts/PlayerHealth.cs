@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -35,14 +36,53 @@ public class PlayerHealth : MonoBehaviour
         animator = GetComponent<Animator>();
         isDead = false;
 
-        // Create health bar
+        CreateOrUpdateHealthBar();
+    }
+
+    private void CreateOrUpdateHealthBar()
+    {
+        FloatingHealthBar[] existingHealthBars = FindObjectsOfType<FloatingHealthBar>();
+        
+        foreach (var healthBar in existingHealthBars)
+        {
+            Destroy(healthBar.gameObject);
+        }
+
         if (healthBarPrefab != null)
         {
-            GameObject healthBarObj = Instantiate(healthBarPrefab, FindObjectOfType<Canvas>().transform);
-            healthBarInstance = healthBarObj.GetComponentInChildren<FloatingHealthBar>();
-            healthBarInstance.AssignTarget(transform);
-            healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
+            Canvas canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                GameObject healthBarObj = Instantiate(healthBarPrefab, canvas.transform);
+                healthBarInstance = healthBarObj.GetComponentInChildren<FloatingHealthBar>();
+                healthBarInstance.AssignTarget(transform);
+                healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
+            }
         }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+        
+        StartCoroutine(InitializeHealthBarNextFrame());
+    }
+
+    private System.Collections.IEnumerator InitializeHealthBarNextFrame()
+    {
+        yield return null;
+        CreateOrUpdateHealthBar();
     }
 
     private void Update()
@@ -50,7 +90,6 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible)
         {
             invincibilityTimer -= Time.deltaTime;
-            // Flash effect
             spriteRenderer.color = new Color(1f, 1f, 1f, Mathf.PingPong(Time.time * 10, 1f));
             
             if (invincibilityTimer <= 0)
@@ -67,7 +106,6 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
         
-        // Update health bar
         if (healthBarInstance != null)
         {
             healthBarInstance.UpdateHealthBar(currentHealth, maxHealth);
@@ -80,7 +118,6 @@ public class PlayerHealth : MonoBehaviour
             audioSource.PlayOneShot(hitSound);
         }
 
-        // Start invincibility
         isInvincible = true;
         invincibilityTimer = invincibilityDuration;
 
@@ -90,7 +127,6 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            // Hit animation
             animator?.SetTrigger("Hit");
         }
     }
@@ -99,22 +135,18 @@ public class PlayerHealth : MonoBehaviour
     {
         isDead = true;
         
-        // Play death animation
         animator?.SetTrigger("Die");
         
-        // Play death sound
         if (audioSource != null && deathSound != null)
         {
             audioSource.PlayOneShot(deathSound);
         }
 
-        // Disable player controls
         GetComponent<Player_Controller>().enabled = false;
         GetComponent<Attack>().enabled = false;
 
         onPlayerDeath?.Invoke();
 
-        // Optional: Restart level after delay
         Invoke("RestartLevel", 2f);
     }
 

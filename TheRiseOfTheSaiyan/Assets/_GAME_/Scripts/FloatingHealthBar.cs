@@ -4,12 +4,22 @@ using UnityEngine.UI;
 public class FloatingHealthBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
-    private Vector3 offset = new Vector3(0, 1, 0);
+    [SerializeField] private Vector3 offset = new Vector3(0, 1, 0);
     [SerializeField] private Transform target;
+    
+    private Canvas canvas;
+
+    private void Start()
+    {
+        canvas = GetComponentInParent<Canvas>();
+    }
 
     public void UpdateHealthBar(float currentValue, float maxValue)
     {
-        slider.value = currentValue / maxValue;
+        if (slider != null)
+        {
+            slider.value = currentValue / maxValue;
+        }
     }
 
     public void AssignTarget(Transform newTarget)
@@ -19,9 +29,19 @@ public class FloatingHealthBar : MonoBehaviour
 
     private void Update()
     {
-        if (target != null)
+        if (target == null)
         {
-            transform.position = target.position + offset;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                AssignTarget(player.transform);
+            }
+        }
+
+        if (target != null && canvas != null)
+        {
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(target.position + offset);
+            transform.position = screenPos;
         }
 
         transform.rotation = Quaternion.identity;
