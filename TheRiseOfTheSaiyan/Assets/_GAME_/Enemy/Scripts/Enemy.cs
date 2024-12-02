@@ -26,12 +26,33 @@ public class Enemy : MonoBehaviour
     private float timeSinceLastDirectionChange;
     private bool isKnockedBack = false;
 
+    [Header("Attack Parameters")]
+    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float attackCooldown = 1.5f;
+    [SerializeField] private float attackRange = 1.2f;
+    [SerializeField] private AudioClip attackSound;
+
+    private float nextAttackTime;
+    private bool canAttack = true;
+
+    private AudioSource audioSource;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         _playerAwarenessController = GetComponentInChildren<PlayerAwarenessController>();
+        audioSource = GetComponent<AudioSource>();
+        
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f;
+            audioSource.maxDistance = 20f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+        }
 
         health = maxHealth;
     }
@@ -65,7 +86,17 @@ public class Enemy : MonoBehaviour
         if (!isKnockedBack) 
         {
             UpdateTargetDirection();
-            Move();
+            
+            // Only move if not within attack range
+            if (!_playerAwarenessController.WithinAttackRange)
+            {
+                Move();
+            }
+            else
+            {
+                TryAttackPlayer();
+            }
+            
             RotateTowardsTarget();
         }
     }
@@ -193,4 +224,32 @@ public class Enemy : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         rb.SetRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime));
     }
+
+    private void TryAttackPlayer()
+{
+    if (!canAttack || Time.time < nextAttackTime) return;
+
+    float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
+    
+    if (distanceToPlayer <= attackRange)
+    {
+        // Trigger attack animation
+        anim.SetTrigger("Attack");
+        
+        // Play attack sound
+        if (audioSource != null && attackSound != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+
+        // Deal damage to player
+        var playerHealth = _playerAwarenessController.PlayerTransform.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(attackDamage);
+        }
+
+        nextAttackTime = Time.time + attackCooldown;
+    }
+}
 }

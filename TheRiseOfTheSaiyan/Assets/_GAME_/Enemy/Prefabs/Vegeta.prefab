@@ -110,6 +110,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 2304
+  attackDamage: 10
+  attackCooldown: 1
+  attackRange: 2
+  attackSound: {fileID: 0}
 --- !u!95 &8423285373099871535
 Animator:
   serializedVersion: 5
@@ -216,6 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerAwarenessDistance: 5
+  _attackAwarenessDistance: 1.5
 --- !u!1001 &9151093714310867131
 PrefabInstance:
   m_ObjectHideFlags: 0
