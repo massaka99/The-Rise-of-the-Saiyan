@@ -175,7 +175,10 @@ MonoBehaviour:
   _rotationSpeed: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 256
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!50 &7623198765609220138
 Rigidbody2D:
   serializedVersion: 4

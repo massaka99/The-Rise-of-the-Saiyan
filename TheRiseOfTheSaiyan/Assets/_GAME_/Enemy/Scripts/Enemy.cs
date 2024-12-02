@@ -14,13 +14,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float _rotationSpeed = 360f;
 
+    public LayerMask groundLayer;
+    public LayerMask obstacleLayer; 
+
     private PlayerAwarenessController _playerAwarenessController;
     private Vector2 moveDirection;
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private Animator anim;
-
-    public LayerMask groundLayer;
 
     private float randomDirectionChangeInterval = 2f;
     private float timeSinceLastDirectionChange;
@@ -54,15 +55,11 @@ public class Enemy : MonoBehaviour
     {
         if (health <= 0)
         {
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
-            {
-                anim.SetTrigger("Die");
-                Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
-            }
+            HandleDeath();
             return;
         }
 
-        if (!isKnockedBack) 
+        if (!isKnockedBack)
         {
             UpdateTargetDirection();
             Move();
@@ -94,21 +91,17 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage, Vector2? knockbackDirection = null)
     {
-        // Reduce health
         health -= damage;
 
-        // Check if the enemy is dead
         if (health <= 0)
         {
             Die();
         }
         else if (knockbackDirection.HasValue)
         {
-            // Apply knockback if a direction is provided
             Knockback(knockbackDirection.Value);
         }
 
-        // Update health bar
         if (healthBarInstance != null)
         {
             healthBarInstance.UpdateHealthBar(health, maxHealth);
@@ -117,14 +110,12 @@ public class Enemy : MonoBehaviour
 
     private void Knockback(Vector2 direction)
     {
-        if (rb != null) // Ensure the Rigidbody2D exists
+        if (rb != null)
         {
-            float knockbackForce = 5f; // Adjust the force as needed
+            float knockbackForce = 5f;
             rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
         }
     }
-
-
 
     private void EndKnockback()
     {
@@ -143,10 +134,10 @@ public class Enemy : MonoBehaviour
             Destroy(healthBarInstance.gameObject);
         }
 
-        if (gameObject.CompareTag("Enemy")) 
+        if (gameObject.CompareTag("Enemy"))
         {
             QuestManager.Instance?.IncrementSaibamenKilled();
-            Debug.Log("Saibaman killed!"); 
+            Debug.Log("Saibaman killed!");
         }
         else if (gameObject.CompareTag("Vegeta"))
         {
@@ -160,7 +151,8 @@ public class Enemy : MonoBehaviour
 
     private bool IsWalkable(Vector2 targetPos)
     {
-        return Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) == null;
+        return Physics2D.OverlapCircle(targetPos, 0.2f, groundLayer) == null &&
+               Physics2D.OverlapCircle(targetPos, 0.2f, obstacleLayer) == null;
     }
 
     private void Move()
@@ -173,7 +165,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            SetRandomDirection();
+            SetRandomDirection(); 
         }
     }
 
@@ -192,5 +184,14 @@ public class Enemy : MonoBehaviour
         float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         rb.SetRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime));
+    }
+
+    private void HandleDeath()
+    {
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+        {
+            anim.SetTrigger("Die");
+            Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
+        }
     }
 }
