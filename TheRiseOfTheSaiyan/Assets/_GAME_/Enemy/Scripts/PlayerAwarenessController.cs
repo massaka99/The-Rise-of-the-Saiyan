@@ -13,6 +13,11 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private Transform _player;
 
+    [SerializeField] private float _attackAwarenessDistance = 1.5f;
+    public bool WithinAttackRange { get; private set; }
+
+    public Transform PlayerTransform => _player;
+
     private void Awake()
     {
         _player = FindObjectOfType<Player_Controller>().transform;
@@ -22,14 +27,9 @@ public class PlayerAwarenessController : MonoBehaviour
     {
         Vector2 enemyToPlayerVector = _player.position - transform.position;
         DirectionToPlayer = enemyToPlayerVector.normalized;
+        float distance = enemyToPlayerVector.magnitude;
 
-        if (enemyToPlayerVector.magnitude <= _playerAwarenessDistance)
-        {
-            AwareOfPlayer = true;
-        }
-        else
-        {
-            AwareOfPlayer = false;
-        }
+        AwareOfPlayer = distance <= _playerAwarenessDistance;
+        WithinAttackRange = distance <= _attackAwarenessDistance;
     }
 }
