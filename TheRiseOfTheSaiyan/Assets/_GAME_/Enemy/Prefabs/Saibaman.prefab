@@ -175,7 +175,10 @@ MonoBehaviour:
   _rotationSpeed: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 256
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   attackDamage: 5
   attackCooldown: 1.2
   attackRange: 10
