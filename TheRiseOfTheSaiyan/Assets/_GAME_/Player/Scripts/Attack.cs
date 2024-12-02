@@ -24,8 +24,12 @@ public class Attack : MonoBehaviour
     {
         playerController = GetComponentInParent<Player_Controller>();
         playerAnim = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
-
+        
+        // Create a dedicated AudioSource for attacks
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // 2D sound
+        
         timeSinceLastAttack = 0f;
     }
 
@@ -90,6 +94,10 @@ public class Attack : MonoBehaviour
     {
         if (audioSource != null && punchSound != null)
         {
+            // Set audio source properties to ensure it plays regardless of movement
+            audioSource.loop = false;
+            audioSource.priority = 0; // High priority
+            audioSource.ignoreListenerPause = true;
             audioSource.PlayOneShot(punchSound);
         }
     }
