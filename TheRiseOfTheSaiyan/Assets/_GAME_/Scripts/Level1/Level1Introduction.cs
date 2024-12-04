@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class Level1Introduction : MonoBehaviour
 {
@@ -8,15 +7,33 @@ public class Level1Introduction : MonoBehaviour
     private readonly string explorationMessage = "Are you ready to explore what the universe has to offer?";
     private readonly string controlsMessage = "Controls:\n\nMovement: W A S D\nSprint: SHIFT\nPunch: SPACE\nInteract: E";
     
-    private bool isFirstLoad = true;
+    private const string INTRO_SHOWN_KEY = "IntroShown";
+    [SerializeField] private GameObject introCanvas;
 
     private void Start()
     {
-        // Only show introduction on first load
-        if (isFirstLoad)
+        // Check if we've shown the intro before
+        if (!PlayerPrefs.HasKey(INTRO_SHOWN_KEY))
         {
+            introCanvas.SetActive(true);
             StartCoroutine(ShowIntroductionSequence());
-            isFirstLoad = false;
+            PlayerPrefs.SetInt(INTRO_SHOWN_KEY, 1);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            // Find and destroy the Canvas in the hierarchy
+            GameObject canvas = GameObject.Find("Canvas");
+            if (canvas != null)
+            {
+                Destroy(canvas);
+            }
+
+            // Also destroy the UIManager instance
+            if (UIManager.Instance != null)
+            {
+                Destroy(UIManager.Instance.gameObject);
+            }
         }
     }
 

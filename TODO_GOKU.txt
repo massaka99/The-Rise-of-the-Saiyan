@@ -1,0 +1,11 @@
+Goku, saibamen og vegeta death lyd
+
+Fiks script så de rent faktisk slår efter en og ikke blot skader ved at kollidere med goku
+
+Xp system (baseret på kills) level xx unlocker kamehameha og super saiyan
+
+Energy system (stamina)
+
+Health potions
+
+Map i venstre hjørne

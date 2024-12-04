@@ -1,0 +1,5 @@
+For at oprette nye levels kan vi blot kopiere en allerede eksisterende scene (map)
+
+For at kunne gå ind i huse, skifte maps eller lign. bruger i trigger points med tilhørende kode / script der sørger for det sker 
+
+Ændrer på playercontroller koden så han automatisk stopper med alle former for animation når han er i stilstand
