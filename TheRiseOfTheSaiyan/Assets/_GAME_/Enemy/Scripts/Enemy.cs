@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -155,7 +156,35 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        if (health <= 0)
+        if (gameObject.CompareTag("Level2Boss"))
+        {
+            int bossNumber;
+            if (gameObject.name.Contains("Frieza")) 
+            {
+                bossNumber = 1;
+            }
+            else if (gameObject.name.Contains("Cell")) 
+            {
+                bossNumber = 2;
+            }
+            else if (gameObject.name.Contains("Buu")) 
+            {
+                bossNumber = 3;
+            }
+            else
+            {
+                Debug.LogError("Unknown boss type!");
+                return;
+            }
+            
+            QuestManager.Instance?.SetBossDefeated(bossNumber);
+            Debug.Log($"Level 2 Boss {bossNumber} ({gameObject.name}) has been defeated!");
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 3 && gameObject.CompareTag("Level2Saibaman"))
+        {
+            QuestManager.Instance?.IncrementLevel2SaibamenKilled();
+        }
+        else if (health <= 0)
         {
             anim.SetTrigger("Die");
         }

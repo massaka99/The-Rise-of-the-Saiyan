@@ -15,6 +15,18 @@ public class QuestManager : MonoBehaviour
     public bool isVegetaQuestCompleted { get; private set; }
     public bool hasSpokenToGohanBeforeChichiQuest { get; private set; }
 
+    // Level 2 Quests
+    public int level2SaibamenKilled { get; private set; }
+    public bool isLevel2QuestActive { get; private set; }
+    public bool isLevel2SaibamenQuestCompleted { get; private set; }
+    private const int LEVEL2_REQUIRED_KILLS = 20;
+
+    // Boss States
+    public bool isFirstBossDefeated { get; private set; }
+    public bool isSecondBossDefeated { get; private set; }
+    public bool isThirdBossDefeated { get; private set; }
+    public bool canFightBosses { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -88,5 +100,50 @@ public class QuestManager : MonoBehaviour
         isVegetaQuestActive = false;
         isVegetaQuestCompleted = false;
         hasSpokenToGohanBeforeChichiQuest = false;
+    }
+
+    public void StartLevel2Quest()
+    {
+        isLevel2QuestActive = true;
+        level2SaibamenKilled = 0;
+        isLevel2SaibamenQuestCompleted = false;
+        canFightBosses = false;
+        Debug.Log("Level 2 Quest Started: Kill 20 Saibamen");
+    }
+
+    public void IncrementLevel2SaibamenKilled()
+    {
+        if (isLevel2QuestActive && !isLevel2SaibamenQuestCompleted)
+        {
+            level2SaibamenKilled++;
+            Debug.Log($"Level 2 Saibamen killed: {level2SaibamenKilled}/{LEVEL2_REQUIRED_KILLS}");
+
+            if (level2SaibamenKilled >= LEVEL2_REQUIRED_KILLS)
+            {
+                isLevel2SaibamenQuestCompleted = true;
+                Debug.Log("Level 2 Saibamen Quest Completed!");
+            }
+        }
+    }
+
+    public void EnableBossFights()
+    {
+        canFightBosses = true;
+    }
+
+    public void SetBossDefeated(int bossNumber)
+    {
+        switch (bossNumber)
+        {
+            case 1:
+                isFirstBossDefeated = true;
+                break;
+            case 2:
+                isSecondBossDefeated = true;
+                break;
+            case 3:
+                isThirdBossDefeated = true;
+                break;
+        }
     }
 } 

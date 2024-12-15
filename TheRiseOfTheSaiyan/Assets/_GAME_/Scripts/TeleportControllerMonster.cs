@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TeleportControllerMonster : TeleportControllerBase
 {
@@ -18,7 +19,15 @@ public class TeleportControllerMonster : TeleportControllerBase
     protected override bool CanTeleport()
     {
         if (QuestManager.Instance == null) return false;
-        return QuestManager.Instance.isQuestActive;
+
+        if (SceneManager.GetActiveScene().buildIndex == 3)
+        {
+            return QuestManager.Instance.isLevel2QuestActive;
+        }
+        else
+        {
+            return QuestManager.Instance.isQuestActive;
+        }
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)

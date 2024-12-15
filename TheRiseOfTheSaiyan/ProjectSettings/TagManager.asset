@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - NPC
   - Vegeta
+  - Level2Boss
+  - Boss1
+  - Level2Saibaman
   layers:
   - Default
   - TransparentFX
