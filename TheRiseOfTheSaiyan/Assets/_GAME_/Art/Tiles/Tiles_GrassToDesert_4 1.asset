@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tiles_GrassToDesert_4 1
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: b65fb944abebb8b4fa1a4ca0a2237042, type: 2}
-  m_Color: {r: 0.74702954, g: 0.2999999, b: 1, a: 1}
+  m_Color: {r: 0.74509805, g: 0.2980392, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0
