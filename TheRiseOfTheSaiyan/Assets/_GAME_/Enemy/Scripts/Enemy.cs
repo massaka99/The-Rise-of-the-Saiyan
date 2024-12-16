@@ -190,7 +190,12 @@ public class Enemy : MonoBehaviour
                 Destroy(healthBarInstance.gameObject);
             }
 
-            if (gameObject.CompareTag("Enemy"))
+            if (SceneManager.GetActiveScene().buildIndex == 3 && gameObject.CompareTag("Level2Saibaman"))
+            {
+                QuestManager.Instance?.IncrementLevel2SaibamenKilled();
+                Debug.Log("Level 2 Saibaman killed!");
+            }
+            else if (gameObject.CompareTag("Enemy"))
             {
                 QuestManager.Instance?.IncrementSaibamenKilled();
                 Debug.Log("Saibaman killed!");
