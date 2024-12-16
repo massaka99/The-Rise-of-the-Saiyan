@@ -45,6 +45,10 @@ public class TeleportControllerLevel2Boss : TeleportControllerBase
             {
                 StartCoroutine(Dialog_Manager.Instance.ShowDialog(cantFightYetDialog));
             }
+            else if (!QuestManager.Instance.IsBossQuestActive(bossNumber))
+            {
+                StartCoroutine(Dialog_Manager.Instance.ShowDialog(cantFightYetDialog));
+            }
             else
             {
                 StartCoroutine(Dialog_Manager.Instance.ShowDialog(previousBossNotDefeatedDialog));

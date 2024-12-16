@@ -60,14 +60,20 @@ public class Gohan_Controller : MonoBehaviour, Interactable
             QuestManager.Instance.EnableBossFights();
             Debug.Log("Frieza quest has begun!");
         }
-        else if (QuestManager.Instance.isFirstBossDefeated && !QuestManager.Instance.isSecondBossDefeated)
+        else if (!QuestManager.Instance.isFirstBossDefeated)
+        {
+            StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2SaibamenCompletedDialog));
+        }
+        else if (QuestManager.Instance.isFirstBossDefeated && !QuestManager.Instance.IsCellQuestActive)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss1CompleteDialog));
+            QuestManager.Instance.StartCellQuest();
             Debug.Log("Cell quest has begun!");
         }
-        else if (QuestManager.Instance.isSecondBossDefeated && !QuestManager.Instance.isThirdBossDefeated)
+        else if (QuestManager.Instance.isSecondBossDefeated && !QuestManager.Instance.IsBuuQuestActive)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss2CompleteDialog));
+            QuestManager.Instance.StartBuuQuest();
             Debug.Log("Buu quest has begun!");
         }
         else if (QuestManager.Instance.isThirdBossDefeated)

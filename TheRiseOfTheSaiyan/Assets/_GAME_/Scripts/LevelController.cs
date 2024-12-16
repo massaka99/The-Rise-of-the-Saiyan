@@ -19,7 +19,19 @@ public class LevelController : MonoBehaviour
     private bool CanProgress()
     {
         if (QuestManager.Instance == null) return false;
-        return QuestManager.Instance.isQuestCompleted && QuestManager.Instance.isVegetaQuestCompleted;
+        
+        // For Level 1 to Level 2 transition
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            return QuestManager.Instance.isQuestCompleted && QuestManager.Instance.isVegetaQuestCompleted;
+        }
+        // For Level 2 to next level transition
+        else if (SceneManager.GetActiveScene().buildIndex == 3)
+        {
+            return QuestManager.Instance.isThirdBossDefeated;
+        }
+        
+        return false;
     }
 
     void OnTriggerEnter2D(Collider2D other)

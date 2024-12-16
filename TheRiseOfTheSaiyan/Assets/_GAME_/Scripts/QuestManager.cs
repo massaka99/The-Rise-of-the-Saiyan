@@ -27,6 +27,16 @@ public class QuestManager : MonoBehaviour
     public bool isThirdBossDefeated { get; private set; }
     public bool canFightBosses { get; private set; }
 
+    // Add these new properties
+    private bool isFriezaQuestActive;
+    private bool isCellQuestActive;
+    private bool isBuuQuestActive;
+
+    // Update the properties to have public getters
+    public bool IsFriezaQuestActive => isFriezaQuestActive;
+    public bool IsCellQuestActive => isCellQuestActive;
+    public bool IsBuuQuestActive => isBuuQuestActive;
+
     private void Awake()
     {
         if (Instance == null)
@@ -129,6 +139,9 @@ public class QuestManager : MonoBehaviour
     public void EnableBossFights()
     {
         canFightBosses = true;
+        isFriezaQuestActive = true;
+        isCellQuestActive = false;
+        isBuuQuestActive = false;
     }
 
     public void SetBossDefeated(int bossNumber)
@@ -137,12 +150,15 @@ public class QuestManager : MonoBehaviour
         {
             case 1:
                 isFirstBossDefeated = true;
+                isFriezaQuestActive = false;
                 break;
             case 2:
                 isSecondBossDefeated = true;
+                isCellQuestActive = false;
                 break;
             case 3:
                 isThirdBossDefeated = true;
+                isBuuQuestActive = false;
                 break;
         }
     }
@@ -155,13 +171,40 @@ public class QuestManager : MonoBehaviour
         switch (bossNumber)
         {
             case 1: // Frieza
-                return true;
+                return IsFriezaQuestActive;
             case 2: // Cell
-                return isFirstBossDefeated;
+                return IsCellQuestActive && isFirstBossDefeated;
             case 3: // Buu
-                return isSecondBossDefeated;
+                return IsBuuQuestActive && isSecondBossDefeated;
             default:
                 return false;
         }
+    }
+
+    // Add this new method
+    public bool IsBossQuestActive(int bossNumber)
+    {
+        switch (bossNumber)
+        {
+            case 1:
+                return isFriezaQuestActive;
+            case 2:
+                return isCellQuestActive;
+            case 3:
+                return isBuuQuestActive;
+            default:
+                return false;
+        }
+    }
+
+    // Add these new methods
+    public void StartCellQuest()
+    {
+        isCellQuestActive = true;
+    }
+
+    public void StartBuuQuest()
+    {
+        isBuuQuestActive = true;
     }
 } 
