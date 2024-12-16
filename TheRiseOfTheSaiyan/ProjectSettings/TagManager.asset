@@ -11,6 +11,7 @@ TagManager:
   - Level2Boss
   - Boss1
   - Level2Saibaman
+  - Beerus
   layers:
   - Default
   - TransparentFX

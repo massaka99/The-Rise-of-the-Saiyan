@@ -547,7 +547,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1023614822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0561e97e7ad8d6b4884d89f8a701b0e5, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d94b3f6cc6b1b245b6a60b94e57e600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1080968347
@@ -736,7 +736,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 481811711}
         m_TargetAssemblyTypeName: CutScene, Assembly-CSharp
-        m_MethodName: Skip
+        m_MethodName: SkipIntro
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -29,18 +29,21 @@ public class NPC_Controller : MonoBehaviour, Interactable
             }
             else
             {
-                if (!QuestManager.Instance.isQuestActive)
+                if (!QuestManager.Instance.isQuestActive && !QuestManager.Instance.isQuestCompleted)
                 {
                     StartCoroutine(Dialog_Manager.Instance.ShowDialog(questStartDialog));
                     QuestManager.Instance.StartSaibamenQuest();
+                    Debug.Log("Chichi's Quest Started: Kill 10 Saibamen");
+                }
+                else if (QuestManager.Instance.isQuestActive && !QuestManager.Instance.isQuestCompleted)
+                {
+                    StartCoroutine(Dialog_Manager.Instance.ShowDialog(questInProgressDialog));
+                    Debug.Log($"Current Saibamen killed: {QuestManager.Instance.saibamenKilled}/10");
                 }
                 else if (QuestManager.Instance.isQuestCompleted)
                 {
                     StartCoroutine(Dialog_Manager.Instance.ShowDialog(questCompletedDialog));
-                }
-                else
-                {
-                    StartCoroutine(Dialog_Manager.Instance.ShowDialog(questInProgressDialog));
+                    Debug.Log("Chichi's Quest is completed!");
                 }
             }
         }

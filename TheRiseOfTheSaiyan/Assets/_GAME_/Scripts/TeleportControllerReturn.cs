@@ -40,17 +40,11 @@ public class TeleportControllerReturn : TeleportControllerBase
                 switch (currentBossNumber)
                 {
                     case 1:
-                        bool canLeave = QuestManager.Instance.isFirstBossDefeated;
-                        Debug.Log($"Checking if can leave Frieza's area: {canLeave}");
-                        return canLeave;
+                        return QuestManager.Instance.isFirstBossDefeated;
                     case 2:
-                        canLeave = QuestManager.Instance.isSecondBossDefeated;
-                        Debug.Log($"Checking if can leave Cell's area: {canLeave}");
-                        return canLeave;
+                        return QuestManager.Instance.isSecondBossDefeated;
                     case 3:
-                        canLeave = QuestManager.Instance.isThirdBossDefeated;
-                        Debug.Log($"Checking if can leave Buu's area: {canLeave}");
-                        return canLeave;
+                        return QuestManager.Instance.isThirdBossDefeated;
                     default:
                         return false;
                 }
@@ -61,9 +55,20 @@ public class TeleportControllerReturn : TeleportControllerBase
         // Level 1 Logic
         if (isInBossArea)
         {
+            // For Vegeta's area
             return QuestManager.Instance.isVegetaQuestCompleted;
         }
-        return QuestManager.Instance.isQuestCompleted;
+        else
+        {
+            // For Saibamen area
+            if (QuestManager.Instance.isQuestActive)
+            {
+                // Can return if quest is completed
+                return QuestManager.Instance.isQuestCompleted;
+            }
+            // Can go to Saibamen area if quest is active
+            return QuestManager.Instance.isQuestActive;
+        }
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)

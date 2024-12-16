@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class QuestManager : MonoBehaviour
 {
@@ -37,6 +38,10 @@ public class QuestManager : MonoBehaviour
     public bool IsCellQuestActive => isCellQuestActive;
     public bool IsBuuQuestActive => isBuuQuestActive;
 
+    // Add these properties for Beerus quest
+    public bool isBeerusQuestActive { get; private set; }
+    public bool isBeerusDefeated { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -69,7 +74,7 @@ public class QuestManager : MonoBehaviour
             if (saibamenKilled >= REQUIRED_KILLS)
             {
                 isQuestCompleted = true;
-                Debug.Log("Quest Completed!");
+                Debug.Log("Chichi's Quest Completed!");
             }
         }
     }
@@ -206,5 +211,25 @@ public class QuestManager : MonoBehaviour
     public void StartBuuQuest()
     {
         isBuuQuestActive = true;
+    }
+
+    // Add this method to start Beerus quest
+    public void StartBeerusQuest()
+    {
+        isBeerusQuestActive = true;
+        isBeerusDefeated = false;
+        Debug.Log("Beerus quest has begun!");
+    }
+
+    // Add this method to complete Beerus quest
+    public void CompleteBeerusQuest()
+    {
+        if (isBeerusQuestActive && !isBeerusDefeated)
+        {
+            isBeerusDefeated = true;
+            Debug.Log("Beerus has been defeated! Game Complete!");
+            // Load the outro scene
+            SceneManager.LoadSceneAsync(5);
+        }
     }
 } 

@@ -156,61 +156,54 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        if (gameObject.CompareTag("Level2Boss"))
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            int bossNumber;
-            if (gameObject.name.Contains("Frieza")) 
+            if (gameObject.CompareTag("Level2Boss"))
             {
-                bossNumber = 1;
-                QuestManager.Instance?.SetBossDefeated(bossNumber);
-                Debug.Log("Frieza has been defeated! Cell quest begins.");
+                // Determine which boss was defeated based on name
+                if (gameObject.name.Contains("Frieza"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(1);
+                    Debug.Log("Frieza has been defeated! Cell quest begins.");
+                }
+                else if (gameObject.name.Contains("Cell"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(2);
+                    Debug.Log("Cell has been defeated! Buu quest begins.");
+                }
+                else if (gameObject.name.Contains("Buu"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(3);
+                    Debug.Log("Buu has been defeated! All bosses are vanquished!");
+                }
             }
-            else if (gameObject.name.Contains("Cell")) 
+            else if (gameObject.CompareTag("Beerus"))
             {
-                bossNumber = 2;
-                QuestManager.Instance?.SetBossDefeated(bossNumber);
-                Debug.Log("Cell has been defeated! Buu quest begins.");
+                QuestManager.Instance?.CompleteBeerusQuest();
+                Debug.Log("Beerus has been defeated! Game Complete!");
             }
-            else if (gameObject.name.Contains("Buu")) 
-            {
-                bossNumber = 3;
-                QuestManager.Instance?.SetBossDefeated(bossNumber);
-                Debug.Log("Buu has been defeated! All bosses are vanquished!");
-            }
-            else
-            {
-                Debug.LogError("Unknown boss type!");
-                return;
-            }
-        }
-        
-        if (SceneManager.GetActiveScene().buildIndex == 3 && gameObject.CompareTag("Level2Saibaman"))
-        {
-            QuestManager.Instance?.IncrementLevel2SaibamenKilled();
-        }
-        else if (health <= 0)
-        {
+
             anim.SetTrigger("Die");
-        }
+            
+            if (healthBarInstance != null)
+            {
+                Destroy(healthBarInstance.gameObject);
+            }
 
-        if (healthBarInstance != null)
-        {
-            Destroy(healthBarInstance.gameObject);
-        }
+            if (gameObject.CompareTag("Enemy"))
+            {
+                QuestManager.Instance?.IncrementSaibamenKilled();
+                Debug.Log("Saibaman killed!");
+            }
+            else if (gameObject.CompareTag("Vegeta"))
+            {
+                QuestManager.Instance?.CompleteVegetaQuest();
+                Debug.Log("Vegeta has been defeated!");
+            }
 
-        if (gameObject.CompareTag("Enemy"))
-        {
-            QuestManager.Instance?.IncrementSaibamenKilled();
-            Debug.Log("Saibaman killed!");
+            OnEnemyKilled?.Invoke(this);
+            Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
         }
-        else if (gameObject.CompareTag("Vegeta"))
-        {
-            QuestManager.Instance?.CompleteVegetaQuest();
-            Debug.Log("Vegeta has been defeated!");
-        }
-
-        OnEnemyKilled?.Invoke(this);
-        Destroy(gameObject, 0.5f);
     }
 
     private bool IsWalkable(Vector2 targetPos)
