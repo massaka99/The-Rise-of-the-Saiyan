@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TeleportControllerReturn : TeleportControllerBase
 {
     [SerializeField] private Dialog cantTeleportDialog;
     [SerializeField] private Dialog mustDefeatVegetaDialog;
+    [SerializeField] private Dialog mustDefeatBossDialog;
     private static bool isInBossArea = false;
+    [SerializeField] private int currentBossNumber;
 
     protected override void Awake()
     {
         base.Awake();
-        if (cantTeleportDialog == null || mustDefeatVegetaDialog == null)
+        if (cantTeleportDialog == null || mustDefeatVegetaDialog == null || mustDefeatBossDialog == null)
         {
-            Debug.LogError("Please assign both Dialogs in the Unity Inspector for TeleportControllerReturn");
+            Debug.LogError("Please assign all Dialogs in the Unity Inspector for TeleportControllerReturn");
         }
         isInBossArea = false;
     }
@@ -28,18 +31,39 @@ public class TeleportControllerReturn : TeleportControllerBase
     {
         if (QuestManager.Instance == null) return false;
 
-        // If we're in the boss area, check if Vegeta is defeated
+        // Level 2 Logic
+        if (SceneManager.GetActiveScene().buildIndex == 3)
+        {
+            if (isInBossArea)
+            {
+                // Check if current boss is defeated
+                switch (currentBossNumber)
+                {
+                    case 1:
+                        bool canLeave = QuestManager.Instance.isFirstBossDefeated;
+                        Debug.Log($"Checking if can leave Frieza's area: {canLeave}");
+                        return canLeave;
+                    case 2:
+                        canLeave = QuestManager.Instance.isSecondBossDefeated;
+                        Debug.Log($"Checking if can leave Cell's area: {canLeave}");
+                        return canLeave;
+                    case 3:
+                        canLeave = QuestManager.Instance.isThirdBossDefeated;
+                        Debug.Log($"Checking if can leave Buu's area: {canLeave}");
+                        return canLeave;
+                    default:
+                        return false;
+                }
+            }
+            return QuestManager.Instance.isLevel2SaibamenQuestCompleted;
+        }
+        
+        // Level 1 Logic
         if (isInBossArea)
         {
-            bool canLeave = QuestManager.Instance.isVegetaQuestCompleted;
-            Debug.Log($"Trying to leave boss area. Vegeta defeated: {canLeave}");
-            return canLeave;
+            return QuestManager.Instance.isVegetaQuestCompleted;
         }
-        // If we're in the normal area, check if Saibamen quest is completed
-        else
-        {
-            return QuestManager.Instance.isQuestCompleted;
-        }
+        return QuestManager.Instance.isQuestCompleted;
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)
@@ -51,7 +75,20 @@ public class TeleportControllerReturn : TeleportControllerBase
 
             if (!canTeleport && Dialog_Manager.Instance != null)
             {
-                Dialog dialogToShow = isInBossArea ? mustDefeatVegetaDialog : cantTeleportDialog;
+                Dialog dialogToShow;
+                if (SceneManager.GetActiveScene().buildIndex == 3 && isInBossArea)
+                {
+                    dialogToShow = mustDefeatBossDialog;
+                }
+                else if (isInBossArea)
+                {
+                    dialogToShow = mustDefeatVegetaDialog;
+                }
+                else
+                {
+                    dialogToShow = cantTeleportDialog;
+                }
+                
                 StartCoroutine(Dialog_Manager.Instance.ShowDialog(dialogToShow));
                 return;
             }

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2874535312468497805}
   m_Layer: 6
   m_Name: Frieza
-  m_TagString: Boss1
+  m_TagString: Level2Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -246,35 +246,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -306,11 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.42
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4380702041106816258, guid: 9c071483648777b4e8bf0ba8717371f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

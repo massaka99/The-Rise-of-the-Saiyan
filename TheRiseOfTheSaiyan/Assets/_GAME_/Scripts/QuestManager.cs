@@ -146,4 +146,22 @@ public class QuestManager : MonoBehaviour
                 break;
         }
     }
+
+    public bool CanFightNextBoss(int bossNumber)
+    {
+        if (!canFightBosses || !isLevel2SaibamenQuestCompleted) 
+            return false;
+
+        switch (bossNumber)
+        {
+            case 1: // Frieza
+                return true;
+            case 2: // Cell
+                return isFirstBossDefeated;
+            case 3: // Buu
+                return isSecondBossDefeated;
+            default:
+                return false;
+        }
+    }
 } 

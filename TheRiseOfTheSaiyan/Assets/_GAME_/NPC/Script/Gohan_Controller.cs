@@ -46,32 +46,34 @@ public class Gohan_Controller : MonoBehaviour, Interactable
     {
         if (!QuestManager.Instance.isLevel2QuestActive)
         {
-            // Start Level 2 quest
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2StartDialog));
             QuestManager.Instance.StartLevel2Quest();
+            Debug.Log("Saibamen quest has begun!");
         }
         else if (!QuestManager.Instance.isLevel2SaibamenQuestCompleted)
         {
-            // Remind about Saibamen quest
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2SaibamenQuestDialog));
         }
         else if (!QuestManager.Instance.canFightBosses)
         {
-            // Enable boss fights after Saibamen quest completion
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2SaibamenCompletedDialog));
             QuestManager.Instance.EnableBossFights();
+            Debug.Log("Frieza quest has begun!");
         }
         else if (QuestManager.Instance.isFirstBossDefeated && !QuestManager.Instance.isSecondBossDefeated)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss1CompleteDialog));
+            Debug.Log("Cell quest has begun!");
         }
         else if (QuestManager.Instance.isSecondBossDefeated && !QuestManager.Instance.isThirdBossDefeated)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss2CompleteDialog));
+            Debug.Log("Buu quest has begun!");
         }
         else if (QuestManager.Instance.isThirdBossDefeated)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss3CompleteDialog));
+            Debug.Log("All quests completed!");
         }
     }
 
