@@ -181,7 +181,7 @@ MonoBehaviour:
     m_Bits: 2048
   attackDamage: 5
   attackCooldown: 1.2
-  attackRange: 10
+  attackRange: 7
   attackSound: {fileID: 8300000, guid: b073b5e6344202d44936245b0d920e27, type: 3}
 --- !u!50 &7623198765609220138
 Rigidbody2D:
