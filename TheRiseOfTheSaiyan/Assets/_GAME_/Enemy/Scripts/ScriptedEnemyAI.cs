@@ -158,14 +158,20 @@ public class ScriptedEnemyAI : MonoBehaviour
         Vector2 directionToPlayer = _playerAwarenessController.DirectionToPlayer.normalized;
         float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
 
-        // Stop moving if too close to the player
         if (distanceToPlayer > attackRange)
         {
+            // Move towards the player
             rb.MovePosition(rb.position + directionToPlayer * moveSpeed * Time.deltaTime);
+            anim.SetBool("IsWalking", true);
         }
         else
         {
-            rb.velocity = Vector2.zero; // Stop movement
+            // Stop moving when close enough to attack
+            rb.velocity = Vector2.zero;
+            anim.SetBool("IsWalking", false);
+
+            // Attempt to attack the player
+            TryAttackPlayer();
         }
 
         // Flip sprite based on movement direction
@@ -174,25 +180,23 @@ public class ScriptedEnemyAI : MonoBehaviour
             GetComponent<SpriteRenderer>().flipX = directionToPlayer.x < 0;
         }
 
-        anim.SetBool("IsWalking", distanceToPlayer > attackRange);
         anim.SetFloat("moveX", directionToPlayer.x);
         anim.SetFloat("moveY", directionToPlayer.y);
-
-        // Attack the player if within attack range
-        if (distanceToPlayer <= attackRange)
-        {
-            TryAttackPlayer();
-        }
     }
-
-
 
     private void TryAttackPlayer()
     {
-        if (Time.time < nextAttackTime) return;
+        if (Time.time < nextAttackTime)
+        {
+            // If currently on cooldown, go idle or walk
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            {
+                SetIdleState(); // or SetWalkingState() depending on your design
+            }
+            return;
+        }
 
         anim.SetTrigger("Attack");
-
         rb.velocity = Vector2.zero;
 
         if (audioSource != null && attackSound != null)
@@ -211,7 +215,15 @@ public class ScriptedEnemyAI : MonoBehaviour
         }
 
         nextAttackTime = Time.time + attackCooldown;
+
+        // After attacking, return to idle or walk
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            SetIdleState(); // or SetWalkingState() depending on design
+        }
     }
+
+
 
 
     public void TakeDamage(float damage, Vector2? knockbackDirection = null)
@@ -244,21 +256,51 @@ public class ScriptedEnemyAI : MonoBehaviour
 
     private void Die()
     {
-        anim.SetTrigger("Die");
-
-        if (healthBarInstance != null)
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            Destroy(healthBarInstance.gameObject);
-        }
+            if (gameObject.CompareTag("Level2Boss"))
+            {
+                // Determine which boss was defeated based on name
+                if (gameObject.name.Contains("Frieza"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(1);
+                    Debug.Log("Frieza has been defeated! Cell quest begins.");
+                }
+                else if (gameObject.name.Contains("Cell"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(2);
+                    Debug.Log("Cell has been defeated! Buu quest begins.");
+                }
+                else if (gameObject.name.Contains("Buu"))
+                {
+                    QuestManager.Instance?.SetBossDefeated(3);
+                    Debug.Log("Buu has been defeated! All bosses are vanquished!");
+                }
+            }
+            else if (gameObject.CompareTag("Vegeta"))
+            {
+                QuestManager.Instance?.CompleteVegetaQuest();
+                Debug.Log("Vegeta has been defeated!");
+            }
+            else if (gameObject.CompareTag("Beerus"))
+            {
+                QuestManager.Instance?.CompleteBeerusQuest();
+                Debug.Log("Beerus has been defeated! Game Complete!");
+            }
 
-        if (gameObject.CompareTag("Beerus"))
-        {
-            QuestManager.Instance?.CompleteBeerusQuest();
-            Debug.Log("Beerus has been defeated!");
-        }
+            // Trigger the death animation
+            anim.SetTrigger("Die");
 
-        OnEnemyKilled?.Invoke(this);
-        Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
+            // Destroy health bar instance if present
+            if (healthBarInstance != null)
+            {
+                Destroy(healthBarInstance.gameObject);
+            }
+
+            // Invoke death event and destroy the enemy object
+            OnEnemyKilled?.Invoke(this);
+            Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
+        }
     }
 
 

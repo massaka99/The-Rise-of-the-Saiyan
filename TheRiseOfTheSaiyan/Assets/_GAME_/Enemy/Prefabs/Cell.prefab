@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6631449692252778224}
   - component: {fileID: 7523746800667492874}
-  - component: {fileID: 2918590028161953764}
   - component: {fileID: 8423285373099871535}
   - component: {fileID: 3936961449672443051}
   - component: {fileID: -445689542915179746}
   - component: {fileID: 2874535312468497805}
+  - component: {fileID: -7299326238747083477}
   m_Layer: 6
   m_Name: Cell
   m_TagString: Level2Boss
@@ -90,32 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2918590028161953764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6859091681110387961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a84594f7290dcb4ba0a4a1df1901490, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
-  health: 10
-  healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  attackDamage: 5
-  attackCooldown: 1.2
-  attackRange: 2
-  attackSound: {fileID: 0}
 --- !u!95 &8423285373099871535
 Animator:
   serializedVersion: 5
@@ -223,6 +197,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerAwarenessDistance: 5
   _attackAwarenessDistance: 1.5
+--- !u!114 &-7299326238747083477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6859091681110387961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f5e7b1deb7b5a489e90ab71a9eabaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 20
+  healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
+  moveSpeed: 1
+  idleTime: 2
+  walkTime: 3
+  attackDamage: 10
+  attackCooldown: 1.5
+  attackRange: 1.2
+  attackSound: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1001 &9151093714310867131
 PrefabInstance:
   m_ObjectHideFlags: 0
