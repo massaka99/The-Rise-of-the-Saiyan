@@ -4,18 +4,18 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
     [Header("Attack Settings")]
-    public float attackRange = 1f;        
-    public int damage = 10;              
-    public float attackCooldown = 1f;    
-    public Transform attackPos;          
-    public LayerMask whatIsEnemies;      
+    public float attackRange = 1f;         
+    public int damage = 10;               
+    public float attackCooldown = 1f;     
+    public Transform attackPos;           
+    public LayerMask whatIsEnemies;       
 
     [Header("Audio")]
-    public AudioClip punchSound;         
-    private AudioSource audioSource;     
+    public AudioClip punchSound;          
+    private AudioSource audioSource;      
 
     [Header("Animation")]
-    public Animator playerAnim;          
+    public Animator playerAnim;           
 
     private float timeSinceLastAttack;   
     private Player_Controller playerController;
@@ -23,13 +23,13 @@ public class Attack : MonoBehaviour
     void Start()
     {
         playerController = GetComponentInParent<Player_Controller>();
-        playerAnim = GetComponent<Animator>();
-        
-        // Create a dedicated AudioSource for attacks
+        playerAnim = GetComponentInParent<Animator>(); // Use parent's Animator component
+
+        // Initialize audio source
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f; // 2D sound
-        
+
         timeSinceLastAttack = 0f;
     }
 
@@ -40,7 +40,7 @@ public class Attack : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && timeSinceLastAttack <= 0)
         {
             PerformAttack();
-            timeSinceLastAttack = attackCooldown; 
+            timeSinceLastAttack = attackCooldown;
         }
     }
 
@@ -57,36 +57,41 @@ public class Attack : MonoBehaviour
 
         foreach (var enemy in enemiesToDamage)
         {
+            Debug.Log($"Detected enemy: {enemy.name}");
+
             if (enemy.TryGetComponent(out Enemy enemyScript))
             {
-                // Calculate knockback direction
                 Vector2 knockbackDirection = (enemy.transform.position - attackPos.position).normalized;
-
-                // Apply damage and knockback
                 enemyScript.TakeDamage(damage, knockbackDirection);
+            }
+            else if (enemy.TryGetComponent(out ScriptedEnemyAI scriptedEnemy))
+            {
+                Vector2 knockbackDirection = (enemy.transform.position - attackPos.position).normalized;
+                scriptedEnemy.TakeDamage(damage, knockbackDirection);
             }
         }
     }
-
-
 
     private void SetAttackAnimation()
     {
         if (playerAnim == null) return;
 
+        // Get the last movement direction from the player controller
         float lastMoveX = playerController.GetLastMoveX();
         float lastMoveY = playerController.GetLastMoveY();
 
+        // Trigger attack animation
         playerAnim.SetBool("isSpace", true);
         playerAnim.SetFloat("moveX", lastMoveX);
         playerAnim.SetFloat("moveY", lastMoveY);
 
+        // Reset the attack animation after a short delay
         StartCoroutine(ResetAttackAnimation());
     }
 
     private IEnumerator ResetAttackAnimation()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f); // Adjust timing to match the animation
         playerAnim.SetBool("isSpace", false);
     }
 
@@ -94,7 +99,6 @@ public class Attack : MonoBehaviour
     {
         if (audioSource != null && punchSound != null)
         {
-            // Set audio source properties to ensure it plays regardless of movement
             audioSource.loop = false;
             audioSource.priority = 0; // High priority
             audioSource.ignoreListenerPause = true;

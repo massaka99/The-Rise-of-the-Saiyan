@@ -105,8 +105,7 @@ MonoBehaviour:
   maxHealth: 5
   health: 5
   healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 1
-  _rotationSpeed: 1
+  moveSpeed: 3
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -115,7 +114,7 @@ MonoBehaviour:
     m_Bits: 2048
   attackDamage: 5
   attackCooldown: 1.2
-  attackRange: 10
+  attackRange: 2
   attackSound: {fileID: 0}
 --- !u!95 &8423285373099871535
 Animator:

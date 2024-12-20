@@ -13,7 +13,6 @@ public class Enemy : MonoBehaviour
     private FloatingHealthBar healthBarInstance;
 
     [SerializeField] private float moveSpeed = 1f;
-    [SerializeField] private float _rotationSpeed = 360f;
 
     public LayerMask groundLayer;
     public LayerMask obstacleLayer; 
@@ -84,20 +83,33 @@ public class Enemy : MonoBehaviour
         if (!isKnockedBack)
         {
             UpdateTargetDirection();
-            
-            // Only move if not within attack range
-            if (!_playerAwarenessController.WithinAttackRange)
+
+            // Stop moving if too close to the player
+            if (IsTooCloseToPlayer())
             {
-                Move();
+                rb.velocity = Vector2.zero;
+                anim.SetBool("IsWalking", false);
+                TryAttackPlayer();
+                return;
+            }
+
+            // If the enemy is within attack range, stop walking and attack
+            if (_playerAwarenessController.WithinAttackRange)
+            {
+                anim.SetBool("IsWalking", false); // Stop walking animation
+                anim.SetBool("IsAttacking", true); // Start attacking animation
+                TryAttackPlayer();
             }
             else
             {
-                TryAttackPlayer();
+                anim.SetBool("IsAttacking", false); // Stop attacking animation
+                Move(); // Continue moving if not attacking
             }
-            
-            RotateTowardsTarget();
         }
     }
+
+
+
 
     private void Update()
     {
@@ -113,7 +125,20 @@ public class Enemy : MonoBehaviour
         {
             SetRandomDirection();
         }
+
+        // Update Animator with movement values for Blend Tre
+        anim.SetFloat("moveX", moveDirection.x);
+        anim.SetFloat("moveY", moveDirection.y);
+
+        // Ensure attacking resets if not within attack range
+        if (!_playerAwarenessController.WithinAttackRange)
+        {
+            anim.SetBool("IsAttacking", false);
+        }
     }
+
+
+
 
     private void SetRandomDirection()
     {
@@ -219,17 +244,38 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
+        if (IsTooCloseToPlayer())
+        {
+            rb.velocity = Vector2.zero; // Stop movement if too close
+            anim.SetBool("IsWalking", false);
+            return;
+        }
+
         Vector2 targetPos = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
 
         if (IsWalkable(targetPos))
         {
             rb.MovePosition(Vector2.MoveTowards(rb.position, targetPos, moveSpeed * Time.fixedDeltaTime));
+            anim.SetBool("IsWalking", true); // Enable walking animation
+
+            // Pass movement direction to Animator for Blend Tree
+            anim.SetFloat("moveX", moveDirection.x);
+            anim.SetFloat("moveY", moveDirection.y);
+
+            // Flip sprite based on movement direction
+            if (moveDirection.x != 0)
+            {
+                spriteRenderer.flipX = moveDirection.x < 0;
+            }
         }
         else
         {
-            SetRandomDirection(); 
+            SetRandomDirection();
+            anim.SetBool("IsWalking", false); // Stop walking animation
         }
     }
+
+
 
     private void UpdateTargetDirection()
     {
@@ -239,42 +285,59 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void RotateTowardsTarget()
-    {
-        if (moveDirection == Vector2.zero) return;
-
-        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        rb.SetRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime));
-    }
-
     private void TryAttackPlayer()
-{
-    if (!canAttack || Time.time < nextAttackTime) return;
-
-    float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
-    
-    if (distanceToPlayer <= attackRange)
     {
-        // Trigger attack animation
-        anim.SetTrigger("Attack");
-        
-        // Play attack sound
-        if (audioSource != null && attackSound != null)
+        if (!canAttack || Time.time < nextAttackTime)
         {
-            audioSource.PlayOneShot(attackSound);
+            // Set IsAttacking to false when not attacking
+            anim.SetBool("IsAttacking", false);
+            return;
         }
 
-        // Deal damage to player
-        var playerHealth = _playerAwarenessController.PlayerTransform.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.TakeDamage(attackDamage);
-        }
+        float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
 
-        nextAttackTime = Time.time + attackCooldown;
+        if (distanceToPlayer <= attackRange)
+        {
+            // Stop movement when attacking
+            rb.velocity = Vector2.zero;
+
+            // Trigger attack animation
+            anim.SetTrigger("Attack");
+            anim.SetBool("IsAttacking", true); // Set attacking state
+
+            // Play attack sound
+            if (audioSource != null && attackSound != null)
+            {
+                audioSource.PlayOneShot(attackSound);
+            }
+
+            // Deal damage to player
+            var playerHealth = _playerAwarenessController.PlayerTransform.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(attackDamage);
+            }
+
+            nextAttackTime = Time.time + attackCooldown;
+        }
+        else
+        {
+            // Set IsAttacking to false when player is out of range
+            anim.SetBool("IsAttacking", false);
+        }
     }
-}
+
+
+    private bool IsTooCloseToPlayer()
+    {
+        if (_playerAwarenessController != null)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
+            return distanceToPlayer <= attackRange; // Stop moving if within attack range
+        }
+        return false;
+    }
+
 
     private void HandleDeath()
     {
