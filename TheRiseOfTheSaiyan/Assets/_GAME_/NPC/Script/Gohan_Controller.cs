@@ -44,7 +44,24 @@ public class Gohan_Controller : MonoBehaviour, Interactable
 
     private void HandleLevel2Interaction()
     {
-        if (!QuestManager.Instance.isLevel2QuestActive)
+        if (QuestManager.Instance.isThirdBossDefeated)
+        {
+            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss3CompleteDialog));
+            Debug.Log("All quests completed!");
+        }
+        else if (QuestManager.Instance.isSecondBossDefeated && !QuestManager.Instance.IsBuuQuestActive)
+        {
+            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss2CompleteDialog));
+            QuestManager.Instance.StartBuuQuest();
+            Debug.Log("Buu quest has begun!");
+        }
+        else if (QuestManager.Instance.isFirstBossDefeated && !QuestManager.Instance.IsCellQuestActive)
+        {
+            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss1CompleteDialog));
+            QuestManager.Instance.StartCellQuest();
+            Debug.Log("Cell quest has begun!");
+        }
+        else if (!QuestManager.Instance.isLevel2QuestActive)
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2StartDialog));
             QuestManager.Instance.StartLevel2Quest();
@@ -60,26 +77,9 @@ public class Gohan_Controller : MonoBehaviour, Interactable
             QuestManager.Instance.EnableBossFights();
             Debug.Log("Frieza quest has begun!");
         }
-        else if (!QuestManager.Instance.isFirstBossDefeated)
+        else
         {
             StartCoroutine(Dialog_Manager.Instance.ShowDialog(level2SaibamenCompletedDialog));
-        }
-        else if (QuestManager.Instance.isFirstBossDefeated && !QuestManager.Instance.IsCellQuestActive)
-        {
-            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss1CompleteDialog));
-            QuestManager.Instance.StartCellQuest();
-            Debug.Log("Cell quest has begun!");
-        }
-        else if (QuestManager.Instance.isSecondBossDefeated && !QuestManager.Instance.IsBuuQuestActive)
-        {
-            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss2CompleteDialog));
-            QuestManager.Instance.StartBuuQuest();
-            Debug.Log("Buu quest has begun!");
-        }
-        else if (QuestManager.Instance.isThirdBossDefeated)
-        {
-            StartCoroutine(Dialog_Manager.Instance.ShowDialog(boss3CompleteDialog));
-            Debug.Log("All quests completed!");
         }
     }
 
@@ -117,5 +117,13 @@ public class Gohan_Controller : MonoBehaviour, Interactable
     {
         yield return new WaitForSeconds(1);
         isInteracting = false;
+    }
+
+    private void Start()
+    {
+        // Add a CircleCollider2D for interaction
+        CircleCollider2D interactionCollider = gameObject.AddComponent<CircleCollider2D>();
+        interactionCollider.isTrigger = true;
+        interactionCollider.radius = 1.5f;
     }
 } 

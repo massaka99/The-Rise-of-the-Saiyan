@@ -3,115 +3,138 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    [Header("Attack Settings")]
-    public float attackRange = 1f;         
-    public int damage = 10;               
-    public float attackCooldown = 1f;     
-    public Transform attackPos;           
+    [Header("Melee Attack Settings")]
+    public float meleeAttackRange = 1f;         
+    public int meleeDamage = 10;               
+    public float meleeAttackCooldown = 1f;     
+    public Transform meleeAttackPos;           
+
+    [Header("Special Attack Settings")]
+    public float kamehamehaRange = 5f;
+    public int kamehamehaDamage = 50;
+    public float kamehamehaCooldown = 3f;
+    public Transform kamehamehaPos;
+
+    [Header("General Settings")]
     public LayerMask whatIsEnemies;       
 
     [Header("Audio")]
-    public AudioClip punchSound;          
+    public AudioClip punchSound;
+    public AudioClip kamehamehaSound;          
     private AudioSource audioSource;      
 
     [Header("Animation")]
     public Animator playerAnim;           
 
-    private float timeSinceLastAttack;   
+    private float timeSinceMeleeAttack;
+    private float timeSinceSpecialAttack;   
     private Player_Controller playerController;
 
     void Start()
     {
         playerController = GetComponentInParent<Player_Controller>();
-        playerAnim = GetComponentInParent<Animator>(); // Use parent's Animator component
+        playerAnim = GetComponentInParent<Animator>();
 
-        // Initialize audio source
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0f; // 2D sound
+        audioSource.spatialBlend = 0f;
 
-        timeSinceLastAttack = 0f;
+        timeSinceMeleeAttack = 0f;
+        timeSinceSpecialAttack = 0f;
     }
 
     void Update()
     {
-        timeSinceLastAttack -= Time.deltaTime;
+        timeSinceMeleeAttack -= Time.deltaTime;
+        timeSinceSpecialAttack -= Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Space) && timeSinceLastAttack <= 0)
+        // Melee attack
+        if (Input.GetKeyDown(KeyCode.Space) && timeSinceMeleeAttack <= 0)
         {
-            PerformAttack();
-            timeSinceLastAttack = attackCooldown;
+            PerformMeleeAttack();
+            timeSinceMeleeAttack = meleeAttackCooldown;
+        }
+
+        // Special attack (Kamehameha)
+        if (Input.GetKeyDown(KeyCode.K) && timeSinceSpecialAttack <= 0)
+        {
+            PerformKamehameha();
+            timeSinceSpecialAttack = kamehamehaCooldown;
         }
     }
 
-    private void PerformAttack()
+    private void PerformMeleeAttack()
     {
-        // Trigger attack animation
-        SetAttackAnimation();
+        SetAttackAnimation("isSpace");
+        PlaySound(punchSound);
+        DealDamage(meleeAttackPos.position, meleeAttackRange, meleeDamage);
+    }
 
-        // Play attack sound
-        PlayAttackSound();
+    private void PerformKamehameha()
+    {
+        SetAttackAnimation("isKamehameha"); 
+        PlaySound(kamehamehaSound);
+        DealDamage(kamehamehaPos.position, kamehamehaRange, kamehamehaDamage);
+    }
 
-        // Detect enemies in attack range
-        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
+    private void DealDamage(Vector2 position, float range, int damage)
+    {
+        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(position, range, whatIsEnemies);
 
         foreach (var enemy in enemiesToDamage)
         {
-            Debug.Log($"Detected enemy: {enemy.name}");
-
+            Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+            
             if (enemy.TryGetComponent(out Enemy enemyScript))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - attackPos.position).normalized;
                 enemyScript.TakeDamage(damage, knockbackDirection);
             }
             else if (enemy.TryGetComponent(out ScriptedEnemyAI scriptedEnemy))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - attackPos.position).normalized;
                 scriptedEnemy.TakeDamage(damage, knockbackDirection);
             }
         }
     }
 
-    private void SetAttackAnimation()
+    private void SetAttackAnimation(string triggerName)
     {
         if (playerAnim == null) return;
 
-        // Get the last movement direction from the player controller
         float lastMoveX = playerController.GetLastMoveX();
         float lastMoveY = playerController.GetLastMoveY();
 
-        // Trigger attack animation
-        playerAnim.SetBool("isSpace", true);
+        playerAnim.SetBool(triggerName, true);
         playerAnim.SetFloat("moveX", lastMoveX);
         playerAnim.SetFloat("moveY", lastMoveY);
 
-        // Reset the attack animation after a short delay
-        StartCoroutine(ResetAttackAnimation());
+        StartCoroutine(ResetAttackAnimation(triggerName));
     }
 
-    private IEnumerator ResetAttackAnimation()
+    private IEnumerator ResetAttackAnimation(string triggerName)
     {
-        yield return new WaitForSeconds(0.1f); // Adjust timing to match the animation
-        playerAnim.SetBool("isSpace", false);
+        yield return new WaitForSeconds(triggerName == "isKamehameha" ? 0.5f : 0.1f);
+        playerAnim.SetBool(triggerName, false);
     }
 
-    private void PlayAttackSound()
+    private void PlaySound(AudioClip sound)
     {
-        if (audioSource != null && punchSound != null)
+        if (audioSource != null && sound != null)
         {
-            audioSource.loop = false;
-            audioSource.priority = 0; // High priority
-            audioSource.ignoreListenerPause = true;
-            audioSource.PlayOneShot(punchSound);
+            audioSource.PlayOneShot(sound);
         }
     }
 
     void OnDrawGizmosSelected()
     {
-        if (attackPos != null)
+        if (meleeAttackPos != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(attackPos.position, attackRange);
+            Gizmos.DrawWireSphere(meleeAttackPos.position, meleeAttackRange);
+        }
+        if (kamehamehaPos != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(kamehamehaPos.position, kamehamehaRange);
         }
     }
 }
