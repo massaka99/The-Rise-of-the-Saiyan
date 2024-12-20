@@ -84,15 +84,6 @@ public class Enemy : MonoBehaviour
         {
             UpdateTargetDirection();
 
-            // Stop moving if too close to the player
-            if (IsTooCloseToPlayer())
-            {
-                rb.velocity = Vector2.zero;
-                anim.SetBool("IsWalking", false);
-                TryAttackPlayer();
-                return;
-            }
-
             // If the enemy is within attack range, stop walking and attack
             if (_playerAwarenessController.WithinAttackRange)
             {
@@ -186,20 +177,10 @@ public class Enemy : MonoBehaviour
             if (gameObject.CompareTag("Level2Boss"))
             {
                 // Determine which boss was defeated based on name
-                if (gameObject.name.Contains("Frieza"))
+                if (gameObject.name.Contains("Frieza") || gameObject.name.Contains("Cell") || gameObject.name.Contains("Buu"))
                 {
-                    QuestManager.Instance?.SetBossDefeated(1);
-                    Debug.Log("Frieza has been defeated! Cell quest begins.");
-                }
-                else if (gameObject.name.Contains("Cell"))
-                {
-                    QuestManager.Instance?.SetBossDefeated(2);
-                    Debug.Log("Cell has been defeated! Buu quest begins.");
-                }
-                else if (gameObject.name.Contains("Buu"))
-                {
-                    QuestManager.Instance?.SetBossDefeated(3);
-                    Debug.Log("Buu has been defeated! All bosses are vanquished!");
+                    // Handled by ScriptedEnemyAI
+                    return;
                 }
             }
             else if (gameObject.CompareTag("Beerus"))
@@ -209,7 +190,7 @@ public class Enemy : MonoBehaviour
             }
 
             anim.SetTrigger("Die");
-            
+
             if (healthBarInstance != null)
             {
                 Destroy(healthBarInstance.gameObject);
@@ -225,16 +206,13 @@ public class Enemy : MonoBehaviour
                 QuestManager.Instance?.IncrementSaibamenKilled();
                 Debug.Log("Saibaman killed!");
             }
-            else if (gameObject.CompareTag("Vegeta"))
-            {
-                QuestManager.Instance?.CompleteVegetaQuest();
-                Debug.Log("Vegeta has been defeated!");
-            }
 
             OnEnemyKilled?.Invoke(this);
             Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
         }
     }
+
+
 
     private bool IsWalkable(Vector2 targetPos)
     {
@@ -244,13 +222,6 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-        if (IsTooCloseToPlayer())
-        {
-            rb.velocity = Vector2.zero; // Stop movement if too close
-            anim.SetBool("IsWalking", false);
-            return;
-        }
-
         Vector2 targetPos = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
 
         if (IsWalkable(targetPos))
@@ -325,17 +296,6 @@ public class Enemy : MonoBehaviour
             // Set IsAttacking to false when player is out of range
             anim.SetBool("IsAttacking", false);
         }
-    }
-
-
-    private bool IsTooCloseToPlayer()
-    {
-        if (_playerAwarenessController != null)
-        {
-            float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
-            return distanceToPlayer <= attackRange; // Stop moving if within attack range
-        }
-        return false;
     }
 
 
