@@ -5,40 +5,33 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
     
-    // Chichi's Quest
     public int saibamenKilled { get; private set; }
     public bool isQuestActive { get; private set; }
     public bool isQuestCompleted { get; private set; }
     private const int REQUIRED_KILLS = 10;
 
-    // Gohan's Quest
     public bool isVegetaQuestActive { get; private set; }
     public bool isVegetaQuestCompleted { get; private set; }
     public bool hasSpokenToGohanBeforeChichiQuest { get; private set; }
 
-    // Level 2 Quests
     public int level2SaibamenKilled { get; private set; }
     public bool isLevel2QuestActive { get; private set; }
     public bool isLevel2SaibamenQuestCompleted { get; private set; }
     private const int LEVEL2_REQUIRED_KILLS = 20;
 
-    // Boss States
     public bool isFirstBossDefeated { get; private set; }
     public bool isSecondBossDefeated { get; private set; }
     public bool isThirdBossDefeated { get; private set; }
     public bool canFightBosses { get; private set; }
 
-    // Add these new properties
     private bool isFriezaQuestActive;
     private bool isCellQuestActive;
     private bool isBuuQuestActive;
 
-    // Update the properties to have public getters
     public bool IsFriezaQuestActive => isFriezaQuestActive;
     public bool IsCellQuestActive => isCellQuestActive;
     public bool IsBuuQuestActive => isBuuQuestActive;
 
-    // Add these properties for Beerus quest
     public bool isBeerusQuestActive { get; private set; }
     public bool isBeerusDefeated { get; private set; }
 
@@ -55,7 +48,6 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    // Chichi's Quest Methods
     public void StartSaibamenQuest()
     {
         isQuestActive = true;
@@ -79,10 +71,9 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    // Gohan's Quest Methods
     public void StartVegetaQuest()
     {
-        if (isQuestCompleted) // Only if Chichi's quest is completed
+        if (isQuestCompleted) 
         {
             isVegetaQuestActive = true;
             isVegetaQuestCompleted = false;
@@ -106,12 +97,10 @@ public class QuestManager : MonoBehaviour
 
     public void ResetQuests()
     {
-        // Reset Chichi's Quest
         isQuestActive = false;
         saibamenKilled = 0;
         isQuestCompleted = false;
 
-        // Reset Gohan's Quest
         isVegetaQuestActive = false;
         isVegetaQuestCompleted = false;
         hasSpokenToGohanBeforeChichiQuest = false;
@@ -186,7 +175,6 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    // Add this new method
     public bool IsBossQuestActive(int bossNumber)
     {
         switch (bossNumber)
@@ -202,7 +190,6 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    // Add these new methods
     public void StartCellQuest()
     {
         isCellQuestActive = true;
@@ -213,7 +200,6 @@ public class QuestManager : MonoBehaviour
         isBuuQuestActive = true;
     }
 
-    // Add this method to start Beerus quest
     public void StartBeerusQuest()
     {
         isBeerusQuestActive = true;
@@ -221,14 +207,12 @@ public class QuestManager : MonoBehaviour
         Debug.Log("Beerus quest has begun!");
     }
 
-    // Add this method to complete Beerus quest
     public void CompleteBeerusQuest()
     {
         if (isBeerusQuestActive && !isBeerusDefeated)
         {
             isBeerusDefeated = true;
             Debug.Log("Beerus has been defeated! Game Complete!");
-            // Load the outro scene
             SceneManager.LoadSceneAsync(5);
         }
     }

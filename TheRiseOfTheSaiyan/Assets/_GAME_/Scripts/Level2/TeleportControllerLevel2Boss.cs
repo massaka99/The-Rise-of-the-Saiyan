@@ -23,7 +23,6 @@ public class TeleportControllerLevel2Boss : TeleportControllerBase
                 audioSource.Play();
             }
             
-            // Set boss area state before teleporting
             TeleportControllerReturn.SetInBossArea(true);
             other.transform.position = teleportDestination.position;
         }
@@ -33,10 +32,8 @@ public class TeleportControllerLevel2Boss : TeleportControllerBase
     {
         if (QuestManager.Instance == null) return false;
 
-        // Use the QuestManager's CanFightNextBoss method
         if (!QuestManager.Instance.CanFightNextBoss(bossNumber))
         {
-            // Show appropriate dialog based on the condition
             if (!QuestManager.Instance.isLevel2SaibamenQuestCompleted)
             {
                 StartCoroutine(Dialog_Manager.Instance.ShowDialog(saibamenQuestNotCompletedDialog));
