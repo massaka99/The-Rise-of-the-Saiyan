@@ -208,13 +208,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f5e7b1deb7b5a489e90ab71a9eabaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 50
+  maxHealth: 80
   healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 11
+  moveSpeed: 12
   idleTime: 4
   walkTime: 4
-  attackDamage: 1
-  attackCooldown: 5
+  attackDamage: 20
+  attackCooldown: 3
   attackRange: 1.2
   attackSound: {fileID: 0}
   groundLayer:

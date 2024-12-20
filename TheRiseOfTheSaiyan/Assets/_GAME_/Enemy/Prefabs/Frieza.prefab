@@ -174,7 +174,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 2.5}
+    oldSize: {x: 0.875, y: 2}
     newSize: {x: 1.125, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -209,13 +209,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f5e7b1deb7b5a489e90ab71a9eabaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
+  maxHealth: 40
   healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 1
+  moveSpeed: 8
   idleTime: 2
   walkTime: 3
-  attackDamage: 10
-  attackCooldown: 1.5
+  attackDamage: 8
+  attackCooldown: 2
   attackRange: 1.2
   attackSound: {fileID: 0}
   groundLayer:

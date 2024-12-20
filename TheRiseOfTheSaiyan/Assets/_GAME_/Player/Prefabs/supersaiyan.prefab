@@ -293,14 +293,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa750fca51421a4fb0f8b6ee8bfcc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 1
-  damage: 1
-  attackCooldown: 1
-  attackPos: {fileID: 1087608297082603460}
+  meleeAttackRange: 2.5
+  meleeDamage: 4
+  meleeAttackCooldown: 0.7
+  meleeAttackPos: {fileID: 0}
+  kamehamehaRange: 5
+  kamehamehaDamage: 50
+  kamehamehaCooldown: 3
+  kamehamehaPos: {fileID: 0}
   whatIsEnemies:
     serializedVersion: 2
     m_Bits: 64
   punchSound: {fileID: 8300000, guid: 4c4644eef5fe6624f93b2acd5dcfba67, type: 3}
+  kamehamehaSound: {fileID: 0}
   playerAnim: {fileID: 0}
 --- !u!114 &7167256853305517108
 MonoBehaviour:
@@ -337,8 +342,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fbff876e524be468e12247e2f448ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
-  currentHealth: 20
+  maxHealth: 25
+  currentHealth: 25
   invincibilityDuration: 1
   hitSound: {fileID: 8300000, guid: ae33fb44b7fbed64fad2264e799e8246, type: 3}
   deathSound: {fileID: 8300000, guid: 6925443414fb2364baf15c9fac92bed0, type: 3}

@@ -167,17 +167,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a84594f7290dcb4ba0a4a1df1901490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
-  health: 20
+  maxHealth: 1
+  health: 1
   healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 1
+  moveSpeed: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 2048
-  attackDamage: 5
+  attackDamage: 4
   attackCooldown: 1.2
   attackRange: 2
   attackSound: {fileID: 8300000, guid: b073b5e6344202d44936245b0d920e27, type: 3}

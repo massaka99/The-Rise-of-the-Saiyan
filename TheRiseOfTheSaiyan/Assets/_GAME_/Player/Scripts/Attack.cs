@@ -45,23 +45,28 @@ public class Attack : MonoBehaviour
 
     void Update()
     {
-        timeSinceMeleeAttack -= Time.deltaTime;
-        timeSinceSpecialAttack -= Time.deltaTime;
+        // Decrease the cooldown timers
+        if (timeSinceMeleeAttack > 0)
+            timeSinceMeleeAttack -= Time.deltaTime;
 
-        // Melee attack
+        if (timeSinceSpecialAttack > 0)
+            timeSinceSpecialAttack -= Time.deltaTime;
+
+        // Melee attack logic
         if (Input.GetKeyDown(KeyCode.Space) && timeSinceMeleeAttack <= 0)
         {
             PerformMeleeAttack();
-            timeSinceMeleeAttack = meleeAttackCooldown;
+            timeSinceMeleeAttack = meleeAttackCooldown; // Reset melee cooldown
         }
 
-        // Special attack (Kamehameha)
+        // Kamehameha attack logic
         if (Input.GetKeyDown(KeyCode.K) && timeSinceSpecialAttack <= 0)
         {
             PerformKamehameha();
-            timeSinceSpecialAttack = kamehamehaCooldown;
+            timeSinceSpecialAttack = kamehamehaCooldown; // Reset special attack cooldown
         }
     }
+
 
     private void PerformMeleeAttack()
     {
@@ -72,19 +77,39 @@ public class Attack : MonoBehaviour
 
     private void PerformKamehameha()
     {
-        SetAttackAnimation("isKamehameha"); 
+        SetAttackAnimation("isKamehameha");
         PlaySound(kamehamehaSound);
-        DealDamage(kamehamehaPos.position, kamehamehaRange, kamehamehaDamage);
+
+        // Convert kamehamehaPos.position to a Vector2
+        Vector2 attackPosition = (Vector2)kamehamehaPos.position;
+
+        // Adjust attack position based on player's last movement direction
+        attackPosition += new Vector2(playerController.GetLastMoveX(), playerController.GetLastMoveY()).normalized * kamehamehaRange;
+
+        // Deal damage in the adjusted position
+        DealDamage(attackPosition, kamehamehaRange, kamehamehaDamage);
     }
+
+
 
     private void DealDamage(Vector2 position, float range, int damage)
     {
+        // Check if enemies are detected in the specified range
         Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(position, range, whatIsEnemies);
+
+        if (enemiesToDamage.Length == 0)
+        {
+            Debug.Log("No enemies detected for Kamehameha attack.");
+            return;
+        }
 
         foreach (var enemy in enemiesToDamage)
         {
+            Debug.Log($"Enemy detected: {enemy.name}");
+
             Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
-            
+
+            // Apply damage to the enemy
             if (enemy.TryGetComponent(out Enemy enemyScript))
             {
                 enemyScript.TakeDamage(damage, knockbackDirection);
@@ -93,8 +118,13 @@ public class Attack : MonoBehaviour
             {
                 scriptedEnemy.TakeDamage(damage, knockbackDirection);
             }
+            else
+            {
+                Debug.Log($"Enemy {enemy.name} does not have a damageable script attached.");
+            }
         }
     }
+
 
     private void SetAttackAnimation(string triggerName)
     {
@@ -107,12 +137,15 @@ public class Attack : MonoBehaviour
         playerAnim.SetFloat("moveX", lastMoveX);
         playerAnim.SetFloat("moveY", lastMoveY);
 
-        StartCoroutine(ResetAttackAnimation(triggerName));
+        // Extend the animation duration to match Kamehameha's full length
+        float animationDuration = triggerName == "isKamehameha" ? 0.6f : 0.2f; // Adjust duration as per animation length
+        StartCoroutine(ResetAttackAnimation(triggerName, animationDuration));
     }
 
-    private IEnumerator ResetAttackAnimation(string triggerName)
+
+    private IEnumerator ResetAttackAnimation(string triggerName, float duration)
     {
-        yield return new WaitForSeconds(triggerName == "isKamehameha" ? 0.5f : 0.1f);
+        yield return new WaitForSeconds(duration);
         playerAnim.SetBool(triggerName, false);
     }
 

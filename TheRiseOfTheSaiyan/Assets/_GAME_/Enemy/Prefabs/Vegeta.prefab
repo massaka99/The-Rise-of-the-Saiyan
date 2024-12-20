@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb0b3a8207bd8f449be015eb190ee3f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAwarenessDistance: 20
+  _playerAwarenessDistance: 10
   _attackAwarenessDistance: 1.5
 --- !u!114 &-207708154343160149
 MonoBehaviour:
@@ -209,14 +209,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f5e7b1deb7b5a489e90ab71a9eabaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
+  maxHealth: 14
   healthBarPrefab: {fileID: 5557646268248273675, guid: 9f8853c5dac97eb47963968ce8448e25, type: 3}
-  moveSpeed: 1
+  moveSpeed: 7
   idleTime: 2
   walkTime: 3
-  attackDamage: 10
+  attackDamage: 2.5
   attackCooldown: 1.5
-  attackRange: 1.2
+  attackRange: 1.3
   attackSound: {fileID: 0}
   groundLayer:
     serializedVersion: 2
