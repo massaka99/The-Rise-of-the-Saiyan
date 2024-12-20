@@ -186,26 +186,25 @@ public class ScriptedEnemyAI : MonoBehaviour
 
     private void TryAttackPlayer()
     {
-        if (Time.time < nextAttackTime)
-        {
-            // If currently on cooldown, go idle or walk
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            {
-                SetIdleState(); // or SetWalkingState() depending on your design
-            }
-            return;
-        }
+        if (Time.time < nextAttackTime) return;
 
+        Vector2 directionToPlayer = (_playerAwarenessController.PlayerTransform.position - transform.position).normalized;
+
+        // Set direction parameters
+        anim.SetFloat("moveX", directionToPlayer.x);
+        anim.SetFloat("moveY", directionToPlayer.y);
+
+        // Trigger attack
         anim.SetTrigger("Attack");
-        rb.velocity = Vector2.zero;
 
+        // Play attack sound
         if (audioSource != null && attackSound != null)
         {
             audioSource.PlayOneShot(attackSound);
         }
 
-        float distanceToPlayer = Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position);
-        if (distanceToPlayer <= attackRange)
+        // Check for player damage
+        if (Vector2.Distance(transform.position, _playerAwarenessController.PlayerTransform.position) <= attackRange)
         {
             var playerHealth = _playerAwarenessController.PlayerTransform.GetComponent<PlayerHealth>();
             if (playerHealth != null)
@@ -215,12 +214,6 @@ public class ScriptedEnemyAI : MonoBehaviour
         }
 
         nextAttackTime = Time.time + attackCooldown;
-
-        // After attacking, return to idle or walk
-        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            SetIdleState(); // or SetWalkingState() depending on design
-        }
     }
 
 
