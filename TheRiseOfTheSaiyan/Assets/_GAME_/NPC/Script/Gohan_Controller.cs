@@ -124,6 +124,6 @@ public class Gohan_Controller : MonoBehaviour, Interactable
         // Add a CircleCollider2D for interaction
         CircleCollider2D interactionCollider = gameObject.AddComponent<CircleCollider2D>();
         interactionCollider.isTrigger = true;
-        interactionCollider.radius = 1.5f; // Adjust this value as needed
+        interactionCollider.radius = 1.5f;
     }
 } 
