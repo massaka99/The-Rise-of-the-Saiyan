@@ -111,7 +111,7 @@ Rich audio experience with:
 
 #### Option 1: Play the Built Game
 
-1. Navigate to the `WIN` folder which contains the pre-built Unity executable
+1. Navigate to the `Executable` folder which contains the pre-built Unity executable
 2. Run `TheRiseOfTheSaiyan.exe` to start playing immediately
 3. No Unity installation required for this option
 
